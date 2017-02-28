@@ -1,5 +1,8 @@
 package world;
 
+import tracing.Hit;
+import tracing.Ray;
+
 import java.awt.event.KeyEvent;
 import java.util.*;
 
@@ -56,7 +59,7 @@ public class World {
         for(Segment s: segments){
             Hit hit = ray.hit(s);
             if(hit != null) {
-                if (bestHit == null || (hit.time > 0 && hit.time < bestHit.time)) {
+                if (bestHit == null || (hit.getTime() > 0 && hit.getTime() < bestHit.getTime())) {
                     bestHit = hit;
                 }
             }
@@ -99,7 +102,7 @@ public class World {
         while (i < 1080) {
             //calculate an intersect for each angle
             Hit hit = trace(current);
-            data[i]=hit.time;
+            data[i]=hit.getTime();
             current += angleDiffRad;
             i++;
         }

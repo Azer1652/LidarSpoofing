@@ -1,6 +1,6 @@
-package world;
+package tracing;
 
-import java.util.List;
+import world.Segment;
 
 public class Ray {
 	
