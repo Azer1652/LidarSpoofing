@@ -21,11 +21,13 @@ public class World {
     private double[] carLocation = new double[]{0,0};
     private double currentCarAngleRad = 0;
 
-    public int speed = 50;
-    public double turnSpeed = 0.05;
+    public int speed = 10;
+    public double turnSpeed = 0.005;
 
     private boolean moveLikeCar = true;
     private boolean up, down, left, right;
+
+    private RandomGen randomGen;
 
 	public World(){
 	    up = false;
@@ -106,6 +108,8 @@ public class World {
             current += angleDiffRad;
             i++;
         }
+
+        randomGen.checkWorld(segments,carLocation);
     }
 
 	synchronized public void move(KeyEvent e){
@@ -160,9 +164,15 @@ public class World {
         }
     }
 	
-	private void buildWorld()
+	private void buildWorld() // Builds initial world only
     {
+        segments.add(new Segment(new double[]{-1000, -1000},new double[]{ -1000, 10000}));
+        segments.add(new Segment(new double[]{1000, -1000},new double[]{ 1000, 10000}));
+        segments.add(new Segment(new double[]{-1000, -1000},new double[]{ 1000, -1000}));
 
+        randomGen = new RandomGen(segments, carLocation);
+
+        /*
         segments.add(new Segment(new double[]{-10000, 10000},new double[]{ -10000, -10000}));
         segments.add(new Segment(new double[]{-10000, -10000},new double[]{ 10000, -10000}));
         segments.add(new Segment(new double[]{10000, -10000},new double[]{ 10000, 10000}));
@@ -179,8 +189,8 @@ public class World {
         segments.add(new Segment(new double[]{-3000, -4000},new double[]{ -4000, -3000}));
 
         segments.add(new Segment(new double[]{6000, 7000},new double[]{ 3000, 0}));
-        segments.add(new Segment(new double[]{3000, 0},new double[]{ 6000, -7000}));
         segments.add(new Segment(new double[]{6000, -7000},new double[]{ 6000, 7000}));
+        */
 	}
 	
 	synchronized public String encodeData(){

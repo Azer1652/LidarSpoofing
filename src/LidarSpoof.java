@@ -20,7 +20,7 @@ public class LidarSpoof {
     static DataSender sender;
     static Thread sendThread = null;
 
-	static public boolean debug_commands = true;
+	static public boolean debug_commands = false;
 	static public boolean debug_dataSender = false;
 	
 	public LidarSpoof() throws IOException, InterruptedException{
