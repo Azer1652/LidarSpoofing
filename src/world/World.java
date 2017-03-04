@@ -24,8 +24,8 @@ public class World {
     private double[] carLocation = new double[]{0,0};
     private double currentCarAngleRad = 0;
 
-    public int speed = 20;
-    public double turnSpeed = 0.01;
+    public int speed = 30;
+    public double turnSpeed = 0.10;
 
     private boolean moveLikeCar = true;
     private boolean up, down, left, right;
@@ -121,7 +121,7 @@ public class World {
             i++;
         }
 
-        //randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
+        randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
     }
 
 	synchronized public void move(KeyEvent e){
