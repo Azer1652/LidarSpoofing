@@ -16,7 +16,7 @@ public class World {
     //private final static double angleEndRad = Math.PI-angleStartRad;
     private final static double angleDiffRad = 4.7124/(1080);
 
-	private List<Segment> segments = new ArrayList<>();
+	public List<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
 	private double data[] = new double[1080];
     private StringBuilder dataString = new StringBuilder();
@@ -24,13 +24,15 @@ public class World {
     private double[] carLocation = new double[]{0,0};
     private double currentCarAngleRad = 0;
 
-    public int speed = 30;
-    public double turnSpeed = 0.10;
+    private int speed = 30;
+    private double turnSpeed = 0.05;
 
     private boolean moveLikeCar = true;
     private boolean up, down, left, right;
 
     private RandomGen randomGen;
+    private JFrame testFrame;
+    private LineComp lineComp;
 
 	public World(){
 	    up = false;
@@ -39,17 +41,18 @@ public class World {
         right = false;
 		buildWorld();
 		//generatePoints();
-		updateWorld();
-		encodeData();
 
-        LineComp lineComp = new LineComp(segments);
+        lineComp = new LineComp(segments);
 
-        JFrame testFrame = new JFrame();
+        testFrame = new JFrame();
         testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         Dimension d = new Dimension(800, 800);
         testFrame.setSize(d);
         testFrame.add(lineComp, BorderLayout.CENTER);
         testFrame.setVisible(true);
+
+		updateWorld();
+		encodeData();
 	}
 	
 	public String getDataString(){
@@ -121,7 +124,8 @@ public class World {
             i++;
         }
 
-        randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
+        updateSegments(); // Replaces all segments with latest ones
+        lineComp.update(segments);
     }
 
 	synchronized public void move(KeyEvent e){
@@ -179,45 +183,7 @@ public class World {
 	private void buildWorld() // Builds initial world only
     {
         randomGen = new RandomGen(new Point((int) carLocation[0],(int) carLocation[1]));
-        GridPiece[][] grid;
-        grid = randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
-        segments.clear();
-
-        for(GridPiece[] gridPieces : grid)
-        {
-            for (GridPiece gridPiece : gridPieces)
-            {
-                if (!gridPiece.segments.isEmpty())
-                {
-                    segments.addAll(gridPiece.segments);
-                }
-
-            }
-        }
-/*
-        segments.add(new Segment(new double[]{-1000, -1000},new double[]{ -1000, 10000}));
-        segments.add(new Segment(new double[]{1000, -1000},new double[]{ 1000, 10000}));
-        segments.add(new Segment(new double[]{-1000, -1000},new double[]{ 1000, -1000}));
-*/
-        /*
-        segments.add(new Segment(new double[]{-10000, 10000},new double[]{ -10000, -10000}));
-        segments.add(new Segment(new double[]{-10000, -10000},new double[]{ 10000, -10000}));
-        segments.add(new Segment(new double[]{10000, -10000},new double[]{ 10000, 10000}));
-        segments.add(new Segment(new double[]{10000, 10000},new double[]{ -10000, 10000}));
-
-        segments.add(new Segment(new double[]{-6000, 6000},new double[]{ -6000, 2000}));
-        segments.add(new Segment(new double[]{-6000, 2000},new double[]{ -2000, 2000}));
-        segments.add(new Segment(new double[]{-2000, 2000},new double[]{ -2000, 6000}));
-        segments.add(new Segment(new double[]{-2000, 6000},new double[]{ -6000, 6000}));
-
-        segments.add(new Segment(new double[]{-4000, -3000},new double[]{ -5000, -4000}));
-        segments.add(new Segment(new double[]{-5000, -4000},new double[]{ -4000, -5000}));
-        segments.add(new Segment(new double[]{-4000, -5000},new double[]{ -3000, -4000}));
-        segments.add(new Segment(new double[]{-3000, -4000},new double[]{ -4000, -3000}));
-
-        segments.add(new Segment(new double[]{6000, 7000},new double[]{ 3000, 0}));
-        segments.add(new Segment(new double[]{6000, -7000},new double[]{ 6000, 7000}));
-        */
+        updateSegments(); // Replaces all segments with latest ones
 	}
 	
 	synchronized public String encodeData(){
@@ -234,4 +200,23 @@ public class World {
 		}
         return dataString.toString();
 	}
+
+    //todo: check performance
+    public void updateSegments()
+    {
+        GridPiece[][] grid = randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
+        segments.clear();
+
+        for(GridPiece[] gridPieces : grid)
+        {
+            for (GridPiece gridPiece : gridPieces)
+            {
+                if (!gridPiece.segments.isEmpty())
+                {
+                    segments.addAll(gridPiece.segments);
+                }
+
+            }
+        }
+    }
 }

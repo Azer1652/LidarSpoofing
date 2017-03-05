@@ -1,7 +1,6 @@
 package world;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -16,9 +15,8 @@ public class RandomGen
     private Point gridLocation;
     private Point prevGridLocation;
     //private int range = 10; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
+    //todo: Currently range is hardcoded, make it dynamic
     private GridPiece[][] grid; // exists of blocks of 1000x1000 mm (Columns in rows)
-
-    //private Segment straight
 
     // Receives the initial segments and location after building the world
     public RandomGen(Point location)
@@ -46,13 +44,6 @@ public class RandomGen
         //grid[20-11][10] = new GridPiece(0,0,new Point(10,11)); // Straight
         //grid[20-12][10] = new GridPiece(2,0,new Point(10,12)); // TCross
 
-        int chanceStraight = 15, chanceCorner = 15, chanceTCross = 20, chanceCross = 50; // Chances in percent
-        boolean[] fitParameters;
-        boolean isFitting,isFittingTop,isFittingBottom,isFittingLeft,isFittingRight;
-        int tries;
-        Random rand = new Random();
-        int rType,rRotation; //random generated
-        int type, rotation;
         Set<Point> prevPoints = new HashSet<>(); // Using sets to make sure no neighbor duplicates are taken
         Set<Point> currentPoints = new HashSet<>();
         Set<Point> newPoints = new HashSet<>();
@@ -73,147 +64,7 @@ public class RandomGen
             }
             newPoints.removeAll(prevPoints);
 
-            for(Point np : newPoints)
-            {
-                isFitting = false;
-                isFittingTop = false;
-                isFittingBottom = false;
-                isFittingLeft = false;
-                isFittingRight = false;
-                tries = 0;
-                do
-                {
-                    // Possibility to favor one shape more than the other
-                    rType = rand.nextInt(100) + 1; // type
-                    rRotation = rand.nextInt(100) + 1; // rotation
-                    /**
-                     * Shape    Chance
-                     * Straight 30%
-                     * Corner   10%
-                     * TCross   20%
-                     * Cross    40%
-                     * End      0%
-                     *
-                     * Some confusion with the grid row/column vs the actual coordinates, here x/y means row/column!
-                     */
-                    if(rType > 0 && rType <= chanceStraight) // Straight shape
-                    {
-                        if(rRotation > 0 && rRotation <= 50) // Rotation ||
-                        {
-                            type = 0;
-                            rotation = 0;
-                        }
-                        else // Rotation =
-                        {
-                            type = 0;
-                            rotation = 1;
-                        }
-                    }
-                    else if(rType > chanceStraight && rType <= chanceStraight+chanceCorner) // Corner shape
-                    {
-                        if(rRotation > 0 && rRotation <= 25) // Rotation /-
-                        {
-                            type = 1;
-                            rotation = 0;
-                        }
-                        else if(rRotation > 25 && rRotation <= 50) // 90° clockwise rotated
-                        {
-                            type = 1;
-                            rotation = 1;
-                        }
-                        else if(rRotation > 50 && rRotation <= 75) // 180° clockwise rotated
-                        {
-                            type = 1;
-                            rotation = 2;
-                        }
-                        else // 270° clockwise rotated
-                        {
-                            type = 1;
-                            rotation = 3;
-                        }
-                    }
-                    else if(rType > chanceStraight+chanceCorner && rType <= chanceStraight+chanceCorner+chanceTCross) // TCross shape
-                    {
-                        if(rRotation > 0 && rRotation <= 25) // Rotation /-
-                        {
-                            type = 2;
-                            rotation = 0;
-                        }
-                        else if(rRotation > 25 && rRotation <= 50) // 90° clockwise rotated
-                        {
-                            type = 2;
-                            rotation = 1;
-                        }
-                        else if(rRotation > 50 && rRotation <= 75) // 180° clockwise rotated
-                        {
-                            type = 2;
-                            rotation = 2;
-                        }
-                        else // 270° clockwise rotated
-                        {
-                            type = 2;
-                            rotation = 3;
-                        }
-                    }
-                    else if(rType > chanceStraight+chanceCorner+chanceTCross && rType <= chanceStraight+chanceCorner+chanceTCross+chanceCross) // Cross shape
-                    {
-                        type = 3;
-                        rotation = 0;
-                    }
-                    else // End shape
-                    {
-                        type = 4;
-                        rotation = 0;
-                    }
-
-                    grid[np.x][np.y] = new GridPiece(type,rotation,new Point(np.y,20-np.x));
-                    fitParameters = grid[np.x][np.y].getGridPieceFitBool(type, rotation);
-
-                    if(np.y+1 < 21)
-                    {
-                        if (fitParameters[0] == grid[np.x][np.y+1].isBottom)
-                            isFittingTop = true;
-                    }
-                    else
-                        isFittingTop = true;
-
-                    if(np.y-1 > -1)
-                    {
-                        if (fitParameters[1] == grid[np.x][np.y-1].isTop)
-                            isFittingBottom = true;
-                    }
-                    else
-                        isFittingBottom = true;
-
-                    if(np.x+1 < 21)
-                    {
-                        if (fitParameters[2] == grid[np.x+1][np.y].isRight)
-                            isFittingLeft = true;
-                    }
-                    else
-                        isFittingLeft = true;
-
-                    if(np.x-1 > -1)
-                    {
-                        if (fitParameters[3] == grid[np.x-1][np.y].isLeft)
-                            isFittingRight = true;
-                    }
-                    else
-                        isFittingRight = true;
-
-                    if(isFittingTop && isFittingBottom && isFittingLeft && isFittingRight)
-                    {
-                        isFitting = true;
-                        grid[np.x][np.y].makeSegment();
-                    }
-                    else
-                        tries++;
-
-                } while(!isFitting);// && tries < 25);
-/*
-                if(tries >= 10) // To improve performance, End shapes are made -> todo: needs long testing if this is really needed
-                    (grid[np.x][np.y] = new GridPiece(4,0,new Point(np.y,20-np.x))).makeSegment();*/
-            }
+            generateRandomGridPieces(newPoints); // Algorithm
 
             prevPoints.clear();
             prevPoints.addAll(currentPoints);
@@ -231,7 +82,7 @@ public class RandomGen
         this.location = location;
         //System.out.println("Physical Location x: " + location.x + " y: " + location.y);
         updateCurrentGridLocation();
-        //updateGrid();
+        updateGrid();
 
         return grid;
     }
@@ -239,23 +90,79 @@ public class RandomGen
     // updates the random grid
     public void updateGrid()
     {
-        if(prevGridLocation.x != gridLocation.x || prevGridLocation.y != gridLocation.y)
+        Set<Point> points = new HashSet<>();
+
+        if(gridLocation.x > prevGridLocation.x) // Column needs to be added on the right
         {
+            // Move every column to the left in the Grid
+            for(int i=0; i<20; i++)
+            {
+                for(int j=0; j<21; j++)
+                {
+                    grid[j][i] = grid[j][i+1];
+                }
+            }
 
-
-
-
-
-
-
-
-            prevGridLocation.x = gridLocation.x;
-            prevGridLocation.y = gridLocation.y;
-            //System.out.println("PrevGridLocation x: " + prevGridLocation.x + " y: " + prevGridLocation.y);
+            // Let the algorithm random generate GridPieces in the most right column
+            for(int z=0; z<21; z++)
+            {
+                points.add(new Point(z,20)); // [row,column] grid
+            }
         }
+        else if(gridLocation.x < prevGridLocation.x)  // Column needs to be added on the left
+        {
+            for(int i=20; i>0; i--)
+            {
+                for(int j=0; j<21; j++)
+                {
+                    grid[j][i] = grid[j][i-1];
+                }
+            }
+
+            for(int z=0; z<21; z++)
+            {
+                points.add(new Point(z,0)); // [row,column] grid
+            }
+        }
+
+        if(gridLocation.y > prevGridLocation.y)  // Row needs to be added on the top
+        {
+            for(int i=20; i>0; i--)
+            {
+                for(int j=0; j<21; j++)
+                {
+                    grid[i][j] = grid[i-1][j];
+                }
+            }
+
+            for(int z=0; z<21; z++)
+            {
+                points.add(new Point(0,z)); // [row,column] grid
+            }
+        }
+        else if(gridLocation.y < prevGridLocation.y) // Row needs to be added on the bottom
+        {
+            for(int i=0; i<20; i++)
+            {
+                for(int j=0; j<21; j++)
+                {
+                    grid[i][j] = grid[i+1][j];
+                }
+            }
+
+            for(int z=0; z<21; z++)
+            {
+                points.add(new Point(20,z)); // [row,column] grid
+            }
+        }
+
+        generateRandomGridPieces(points); // if car hasn't moved, nothing will be generated
+        prevGridLocation.x = gridLocation.x;
+        prevGridLocation.y = gridLocation.y;
+        //System.out.println("PrevGridLocation x: " + prevGridLocation.x + " y: " + prevGridLocation.y);
     }
 
-    // This helps us keeping a track on where the car physically is in the grid
+    // This helps us keeping a track on where the car physically is in the grid (Here: real x/y coordinates!)
     public void updateCurrentGridLocation()
     {
         if(location.x > 500+1000*gridLocation.x)
@@ -277,6 +184,167 @@ public class RandomGen
         }
 
         //System.out.println("Gridlocation x: " + gridLocation.x + " y: " + gridLocation.y);
+    }
+
+    // Algorithm used in initialisation and update of the mapgrid
+    public void generateRandomGridPieces(Set<Point> points)
+    {
+        int chanceStraight = 15, chanceCorner = 15, chanceTCross = 20, chanceCross = 50; // Chances in percent
+        boolean[] fitParameters;
+        boolean isFitting,isFittingTop,isFittingBottom,isFittingLeft,isFittingRight;
+        int tries;
+        Random rand = new Random();
+        int rType,rRotation; //random generated
+        int type, rotation;
+
+        for(Point p : points)
+        {
+            isFitting = false;
+            isFittingTop = false;
+            isFittingBottom = false;
+            isFittingLeft = false;
+            isFittingRight = false;
+            tries = 0;
+            do
+            {
+                // Possibility to favor one shape more than the other
+                rType = rand.nextInt(100) + 1; // type
+                rRotation = rand.nextInt(100) + 1; // rotation
+                /**
+                 * Shape    Chance
+                 * Straight 30%
+                 * Corner   10%
+                 * TCross   20%
+                 * Cross    40%
+                 * End      0%
+                 *
+                 * Some confusion with the grid row/column vs the actual coordinates, here x/y means row/column!
+                 */
+                if(rType > 0 && rType <= chanceStraight) // Straight shape
+                {
+                    if(rRotation > 0 && rRotation <= 50) // Rotation ||
+                    {
+                        type = 0;
+                        rotation = 0;
+                    }
+                    else // Rotation =
+                    {
+                        type = 0;
+                        rotation = 1;
+                    }
+                }
+                else if(rType > chanceStraight && rType <= chanceStraight+chanceCorner) // Corner shape
+                {
+                    if(rRotation > 0 && rRotation <= 25) // Rotation /-
+                    {
+                        type = 1;
+                        rotation = 0;
+                    }
+                    else if(rRotation > 25 && rRotation <= 50) // 90° clockwise rotated
+                    {
+                        type = 1;
+                        rotation = 1;
+                    }
+                    else if(rRotation > 50 && rRotation <= 75) // 180° clockwise rotated
+                    {
+                        type = 1;
+                        rotation = 2;
+                    }
+                    else // 270° clockwise rotated
+                    {
+                        type = 1;
+                        rotation = 3;
+                    }
+                }
+                else if(rType > chanceStraight+chanceCorner && rType <= chanceStraight+chanceCorner+chanceTCross) // TCross shape
+                {
+                    if(rRotation > 0 && rRotation <= 25) // Rotation /-
+                    {
+                        type = 2;
+                        rotation = 0;
+                    }
+                    else if(rRotation > 25 && rRotation <= 50) // 90° clockwise rotated
+                    {
+                        type = 2;
+                        rotation = 1;
+                    }
+                    else if(rRotation > 50 && rRotation <= 75) // 180° clockwise rotated
+                    {
+                        type = 2;
+                        rotation = 2;
+                    }
+                    else // 270° clockwise rotated
+                    {
+                        type = 2;
+                        rotation = 3;
+                    }
+                }
+                else if(rType > chanceStraight+chanceCorner+chanceTCross && rType <= chanceStraight+chanceCorner+chanceTCross+chanceCross) // Cross shape
+                {
+                    type = 3;
+                    rotation = 0;
+                }
+                else // End shape
+                {
+                    type = 4;
+                    rotation = 0;
+                }
+
+                //Makes sure the gridLocation of the car is looked at before physically making the gridPiece
+                grid[p.x][p.y] = new GridPiece(type,rotation,new Point(p.y+gridLocation.x,20-p.x+gridLocation.y));
+
+/**
+ * Below code: Not really needed actually, because of the chances per shape, you still have a very good maze where you can find your way through
+
+                fitParameters = grid[p.x][p.y].getGridPieceFitBool(type, rotation);
+
+                if(p.y+1 < 21)
+                {
+                    if (fitParameters[0] == grid[p.x][p.y+1].isBottom)
+                        isFittingTop = true;
+                }
+                else
+                    isFittingTop = true;
+
+                if(p.y-1 > -1)
+                {
+                    if (fitParameters[1] == grid[p.x][p.y-1].isTop)
+                        isFittingBottom = true;
+                }
+                else
+                    isFittingBottom = true;
+
+                if(p.x+1 < 21)
+                {
+                    if (fitParameters[2] == grid[p.x+1][p.y].isRight)
+                        isFittingLeft = true;
+                }d
+                else
+                    isFittingLeft = true;
+
+                if(p.x-1 > -1)
+                {
+                    if (fitParameters[3] == grid[p.x-1][p.y].isLeft)
+                        isFittingRight = true;
+                }
+                else
+                    isFittingRight = true;
+
+                if(isFittingTop && isFittingBottom && isFittingLeft && isFittingRight)
+                {
+                    isFitting = true;
+                    grid[p.x][p.y].makeSegment();
+                }
+                else
+                    tries++;
+*/
+                isFitting = true;
+                grid[p.x][p.y].makeSegment();
+            } while(!isFitting);// && tries < 25);
+/*
+                if(tries >= 10) // To improve performance, End shapes are made -> todo: needs long testing if this is really needed
+                    (grid[np.x][np.y] = new GridPiece(4,0,new Point(np.y,20-np.x))).makeSegment();*/
+        }
     }
 
 }

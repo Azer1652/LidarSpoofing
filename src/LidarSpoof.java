@@ -1,13 +1,11 @@
 import world.World;
 
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 
 public class LidarSpoof {
 	ServerSocket initSocket;
@@ -53,7 +51,6 @@ public class LidarSpoof {
 			/*System.out.println("Received: " + clientSentence);
             capitalizedSentence = clientSentence.toUpperCase() + "\n";
             outToClient.writeBytes(capitalizedSentence);*/
-			
 		}
 	}
 	
@@ -165,8 +162,6 @@ public class LidarSpoof {
 			out.write(builder.toString().getBytes());
 			break;
 		}
-		
-			
 	}
 	
 	public static void appendTerminator(StringBuilder builder, String model){
