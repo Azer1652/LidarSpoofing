@@ -24,7 +24,7 @@ public class World {
     private double[] carLocation = new double[]{0,0};
     private double currentCarAngleRad = 0;
 
-    private int speed = 30;
+    private int speed = 50;
     private double turnSpeed = 0.05;
 
     private boolean moveLikeCar = true;

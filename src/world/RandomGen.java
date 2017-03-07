@@ -14,7 +14,7 @@ public class RandomGen
     private Point location;
     private Point gridLocation;
     private Point prevGridLocation;
-    //private int range = 10; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
+    private int range = 15; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
     //todo: Currently range is hardcoded, make it dynamic
     private GridPiece[][] grid; // exists of blocks of 1000x1000 mm (Columns in rows)
 
@@ -24,42 +24,42 @@ public class RandomGen
         gridLocation = new Point(0,0);
         prevGridLocation = new Point(-1,-1);
         this.location = location;
-        grid = new GridPiece[21][21];
+        grid = new GridPiece[2*range+1][2*range+1];
 
         initGrid(); // initialisation of the grid
     }
 
     public void initGrid()
     {
-        for(int i=0;i<21;i++)
+        for(int i=0;i<2*range+1;i++)
         {
-            for(int j=0;j<21;j++)
+            for(int j=0;j<2*range+1;j++)
             {
                 grid[i][j] = new GridPiece(5,0,new Point(i,j));
             }
         }
         // [row = y][column = x]                (x,y)
         //grid[20-9][10] = new GridPiece(4,0,new Point(10,9)); // End
-        (grid[20-10][10] = new GridPiece(0,0,new Point(10,10))).makeSegment(); // Straight
+        (grid[2*range-range][range] = new GridPiece(0,0,new Point(range,range))).makeSegment(); // Straight
         //grid[20-11][10] = new GridPiece(0,0,new Point(10,11)); // Straight
         //grid[20-12][10] = new GridPiece(2,0,new Point(10,12)); // TCross
 
         Set<Point> prevPoints = new HashSet<>(); // Using sets to make sure no neighbor duplicates are taken
         Set<Point> currentPoints = new HashSet<>();
         Set<Point> newPoints = new HashSet<>();
-        currentPoints.add(new Point(10,10)); // initial point: [row,column] grid
+        currentPoints.add(new Point(range,range)); // initial point: [row,column] grid
 
-        for(int i=0; i<20; i++)
+        for(int i=0; i<2*range; i++)
         {
             for(Point cp : currentPoints) // Makes neighbors of previous points
             {
                 if(cp.x-1 > -1 )
                     newPoints.add(new Point(cp.x-1,cp.y));
-                if(cp.x+1 < 21 )
+                if(cp.x+1 < 2*range+1 )
                     newPoints.add(new Point(cp.x+1,cp.y));
                 if(cp.y-1 > -1 )
                     newPoints.add(new Point(cp.x,cp.y-1));
-                if(cp.y+1 < 21 )
+                if(cp.y+1 < 2*range+1 )
                     newPoints.add(new Point(cp.x,cp.y+1));
             }
             newPoints.removeAll(prevPoints);
@@ -95,31 +95,31 @@ public class RandomGen
         if(gridLocation.x > prevGridLocation.x) // Column needs to be added on the right
         {
             // Move every column to the left in the Grid
-            for(int i=0; i<20; i++)
+            for(int i=0; i<2*range; i++)
             {
-                for(int j=0; j<21; j++)
+                for(int j=0; j<2*range+1; j++)
                 {
                     grid[j][i] = grid[j][i+1];
                 }
             }
 
             // Let the algorithm random generate GridPieces in the most right column
-            for(int z=0; z<21; z++)
+            for(int z=0; z<2*range+1; z++)
             {
-                points.add(new Point(z,20)); // [row,column] grid
+                points.add(new Point(z,2*range)); // [row,column] grid
             }
         }
         else if(gridLocation.x < prevGridLocation.x)  // Column needs to be added on the left
         {
-            for(int i=20; i>0; i--)
+            for(int i=2*range; i>0; i--)
             {
-                for(int j=0; j<21; j++)
+                for(int j=0; j<2*range+1; j++)
                 {
                     grid[j][i] = grid[j][i-1];
                 }
             }
 
-            for(int z=0; z<21; z++)
+            for(int z=0; z<2*range+1; z++)
             {
                 points.add(new Point(z,0)); // [row,column] grid
             }
@@ -127,32 +127,32 @@ public class RandomGen
 
         if(gridLocation.y > prevGridLocation.y)  // Row needs to be added on the top
         {
-            for(int i=20; i>0; i--)
+            for(int i=2*range; i>0; i--)
             {
-                for(int j=0; j<21; j++)
+                for(int j=0; j<2*range+1; j++)
                 {
                     grid[i][j] = grid[i-1][j];
                 }
             }
 
-            for(int z=0; z<21; z++)
+            for(int z=0; z<2*range+1; z++)
             {
                 points.add(new Point(0,z)); // [row,column] grid
             }
         }
         else if(gridLocation.y < prevGridLocation.y) // Row needs to be added on the bottom
         {
-            for(int i=0; i<20; i++)
+            for(int i=0; i<2*range; i++)
             {
-                for(int j=0; j<21; j++)
+                for(int j=0; j<2*range+1; j++)
                 {
                     grid[i][j] = grid[i+1][j];
                 }
             }
 
-            for(int z=0; z<21; z++)
+            for(int z=0; z<2*range+1; z++)
             {
-                points.add(new Point(20,z)); // [row,column] grid
+                points.add(new Point(2*range,z)); // [row,column] grid
             }
         }
 
@@ -291,7 +291,7 @@ public class RandomGen
                 }
 
                 //Makes sure the gridLocation of the car is looked at before physically making the gridPiece
-                grid[p.x][p.y] = new GridPiece(type,rotation,new Point(p.y+gridLocation.x,20-p.x+gridLocation.y));
+                grid[p.x][p.y] = new GridPiece(type,rotation,new Point(p.y+gridLocation.x,2*range-p.x+gridLocation.y));
 
 /**
  * Below code: Not really needed actually, because of the chances per shape, you still have a very good maze where you can find your way through
