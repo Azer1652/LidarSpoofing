@@ -99,11 +99,11 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
 
         // Player at headingY. Rotate the scene by -headingY instead (add 360 to get a
         // positive angle)
-        gl.glRotated(-270-world.getCarHeadingDeg(), 0, 1.0f, 0);
+        gl.glRotated(90+world.getCarHeadingDeg(), 0, 1.0f, 0);
 
         // Player is at (posX, 0, posZ). Translate the scene to (-posX, 0, -posZ)
         // instead.
-        gl.glTranslated(-world.getCarLocation()[0], 0, world.getCarLocation()[1]);
+        gl.glTranslated(-world.getCarLocation()[0], 0, -world.getCarLocation()[1]);
 
         // Process each triangle
         for(Segment s : world.getSegments()){
