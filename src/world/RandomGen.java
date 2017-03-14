@@ -15,7 +15,6 @@ public class RandomGen
     private Point gridLocation;
     private Point prevGridLocation;
     private int range = 10; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
-    //todo: Currently range is hardcoded, make it dynamic
     private GridPiece[][] grid; // exists of blocks of 1000x1000 mm (Columns in rows)
 
     // Receives the initial segments and location after building the world
@@ -371,7 +370,7 @@ public class RandomGen
                 grid[p.x][p.y].makeSegment();
             } while(!isFitting);// && tries < 25);
 /*
-                if(tries >= 10) // To improve performance, End shapes are made -> todo: needs long testing if this is really needed
+                if(tries >= 10) // To improve performance, End shapes are made
                     (grid[np.x][np.y] = new GridPiece(4,0,new Point(np.y,20-np.x))).makeSegment();*/
         }
     }

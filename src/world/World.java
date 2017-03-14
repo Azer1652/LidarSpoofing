@@ -201,7 +201,6 @@ public class World {
         return dataString.toString();
 	}
 
-    //todo: check performance
     public void updateSegments()
     {
         GridPiece[][] grid = randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
