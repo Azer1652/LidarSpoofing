@@ -6,6 +6,7 @@ public class Ray {
 	
 	private double direction[];
 	private double location[];
+	private double angle;
 
 	public Ray(){
 		this.location = new double[]{0,0};
@@ -13,10 +14,16 @@ public class Ray {
 	}
 
 	public Ray(double angle){
+		this.angle=angle;
 		this.location = new double[]{0,0};
 		this.direction = new double[]{0,0};
 		this.direction[0] = Math.cos(angle);
 		this.direction[1] = Math.sin(angle);
+	}
+
+	public Ray(double[] location, double angle){
+		this.location = location;
+		this.angle = angle;
 	}
 
 	public Ray(double[] location, double[] direction){
@@ -42,6 +49,74 @@ public class Ray {
 	public void setDirection(double x, double y){
 		this.direction[0] = x;
 		this.direction[1] = y;
+	}
+
+	public Hit hitPixel(int[][] pixelData) {
+		double i, j;
+		double dx = Math.cos(angle);
+		double dy = Math.sin(angle);
+		double rico = dy / dx;
+		double inverseRico = dx / dy;
+
+		if (angle <= Math.PI / 4 && angle >= -Math.PI / 4 || angle >= Math.PI * 7 / 4 && angle <= Math.PI * 2) {
+			i = 0;
+			while (i < 100) {
+				j = Math.floor(rico * i);
+				int locationX = (int) (location[0] + i);
+				int locationY = (int) (location[1] + j);
+
+				if (locationX <= 0 || locationX >= 900 || locationY <= 0 || locationY >= 1000) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				} else if (pixelData[(int) location[0]][(int) location[1]] != pixelData[locationX][locationY]) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				}
+				i++;
+			}
+		} else if (angle <= Math.PI * 5 / 4 && angle >= Math.PI * 3 / 4 || angle >= -Math.PI && angle < -Math.PI * 3 / 4) {
+			i = 0;
+			while (i > -100) {
+				j = Math.floor(rico * i);
+				int locationX = (int) (location[0] + i);
+				int locationY = (int) (location[1] + j);
+
+				if (locationX <= 0 || locationX >= 900 || locationY <= 0 || locationY >= 1000) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				} else if (pixelData[(int) location[0]][(int) location[1]] != pixelData[locationX][locationY]) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				}
+				i--;
+			}
+		} else if (angle > Math.PI / 4 && angle < Math.PI * 3 / 4) {
+			j = 0;
+			while (j < 100) {
+				i = Math.floor(inverseRico * j);
+				int locationX = (int) (location[0] + i);
+				int locationY = (int) (location[1] + j);
+
+				if (locationX <= 0 || locationX >= 900 || locationY <= 0 || locationY >= 1000) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				} else if (pixelData[(int) location[0]][(int) location[1]] != pixelData[locationX][locationY]) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				}
+				j++;
+			}
+		} else if (angle < -Math.PI / 4 && angle > -Math.PI * 3 / 4 || angle < Math.PI * 7 / 4 && angle > Math.PI * 5 / 4) {
+			j = 0;
+			while (j > -100) {
+				i = Math.floor(inverseRico * j);
+				int locationX = (int) (location[0] + i);
+				int locationY = (int) (location[1] + j);
+
+				if (locationX <= 0 || locationX >= 900 || locationY <= 0 || locationY >= 1000) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				} else if (pixelData[(int) location[0]][(int) location[1]] != pixelData[locationX][locationY]) {
+					return new Hit(new double[]{locationX, locationY}, Math.sqrt(i * i + j * j));
+				}
+				j--;
+			}
+		}
+
+		return new Hit(null, 100);
 	}
 
 	public Hit hit(Segment segment){

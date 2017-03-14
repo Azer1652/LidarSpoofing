@@ -13,15 +13,19 @@ public class World {
     //private final static double angleEndRad = Math.PI-angleStartRad;
     private final static double angleDiffRad = Math.toRadians(270)/(1080);
 
+    private int[][] pixelData = new int[4000][4000];
+
 	private List<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
 	private double data[] = new double[1080];
     private StringBuilder dataString = new StringBuilder();
 
-    private double[] carLocation = new double[]{0,0};
+    private double[] carLocation = new double[]{300,250};
+    //private double[] carLocation = new double[]{0,0};
     private double currentCarAngleRad = 0;
 
-    public double speed = 50;
+    //public double speed = 50;
+    public int speed = 1; //in pixels
     public double turnSpeed = 0.05;
 
     private boolean moveLikeCar = true;
@@ -32,7 +36,8 @@ public class World {
         down = false;
         left = false;
         right = false;
-		buildWorld();
+		//buildWorld();
+        getWorldFromImage();
 		//generatePoints();
 		updateWorld();
 		encodeData();
@@ -42,6 +47,14 @@ public class World {
 	    updateWorld();
 	    encodeData();
 	    return dataString.toString();
+    }
+
+    private Hit tracePixel(double angle){
+        //set direction
+        Ray ray = new Ray(angle+currentCarAngleRad);
+        ray.setLocation(carLocation);
+        Hit hit = ray.hitPixel(pixelData);
+        return hit;
     }
 
     private Hit trace(double angle){
@@ -113,7 +126,8 @@ public class World {
 
         while (i < 1080) {
             //calculate an intersect for each angle
-            Hit hit = trace(current);
+            //Hit hit = trace(current);
+            Hit hit = tracePixel(current);
             data[i]=hit.getTime();
             current -= angleDiffRad;
             i++;
@@ -171,7 +185,13 @@ public class World {
                 break;
         }
     }
-	
+
+    private void getWorldFromImage(){
+        Image image = new Image();
+
+        pixelData = image.openImage();
+    }
+
 	private void buildWorld()
     {
 
