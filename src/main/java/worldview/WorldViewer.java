@@ -15,6 +15,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT;
@@ -43,7 +45,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         this.addKeyListener(this);
 
         // Create a animator that drives canvas' display() at the specified FPS.
-        final FPSAnimator animator = new FPSAnimator(this, 60, true);
+        final FPSAnimator animator = new FPSAnimator(this, 10, true);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -106,7 +108,8 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         gl.glTranslated(-world.getCarLocation()[0], 0, -world.getCarLocation()[1]);
 
         // Process each triangle
-        for(Segment s : world.getSegments()){
+        for(Segment s : world.getSegments())
+        {
             gl.glBegin(GL2.GL_QUADS);
             gl.glNormal3f(0.0f, 0.0f, 1.0f); // Normal pointing out of screen
 
@@ -135,7 +138,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
     }
 
     private void updateWorld(){
-
+        world.updateWorld();
     }
 
     @Override

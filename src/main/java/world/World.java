@@ -19,7 +19,7 @@ public class World {
 
     private int[][] pixelData = new int[4000][4000];
 
-	public List<Segment> segments = new ArrayList<>();
+	public ArrayList<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
 	private double data[] = new double[1080];
     private StringBuilder dataString = new StringBuilder();
@@ -109,11 +109,11 @@ public class World {
         return carLocation;
     }
 
-    public List<Segment> getSegments(){
+    public ArrayList<Segment> getSegments(){
         return segments;
     }
 
-	synchronized private void updateWorld(){
+	synchronized public void updateWorld(){
         double current = angleStartRad;
 
         if(!moveLikeCar) {
