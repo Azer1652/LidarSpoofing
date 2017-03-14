@@ -17,7 +17,7 @@ public class World {
     private final static double angleDiffRad = Math.toRadians(270)/(1080);
     private final String args;
 
-    private int[][] pixelData = new int[4000][4000];
+    private int[][] pixelData;
 
 	public List<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
@@ -113,7 +113,7 @@ public class World {
         return segments;
     }
 
-	synchronized private void updateWorld(){
+	synchronized public void updateWorld(){
         double current = angleStartRad;
 
         if(!moveLikeCar) {
