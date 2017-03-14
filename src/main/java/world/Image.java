@@ -6,6 +6,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Iterator;
@@ -17,7 +19,7 @@ import java.util.Scanner;
  */
 public class Image extends JFrame
 {
-    BufferedImage img, image, binaryImage = null;
+    BufferedImage image, binaryImage = null;
     int[][] pixelData;
 
     public void Image() {}
@@ -26,23 +28,20 @@ public class Image extends JFrame
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
-        this.setSize(1000, 900);
+        this.setSize(1000, 1000);
 
 
-        String filename = "myMap.pgm";
+        String filename = "hector_slam_map_14-18-36.tiff";
         String s = filename.substring(filename.lastIndexOf(".") + 1);
         System.out.println(s);
 
-        if(Objects.equals(s, "png"))
+        if (Objects.equals(s, "png"))
         {
             openPNG(filename);
-        }
-
-        else if(Objects.equals(s,"tiff"))
+        } else if (Objects.equals(s, "tiff"))
         {
             openTIFF(filename);
-        }
-        else if(Objects.equals(s, "pgm"))
+        } else if (Objects.equals(s, "pgm"))
         {
             openPGM(filename);
         }
@@ -58,9 +57,8 @@ public class Image extends JFrame
     {
         try
         {
-            img = ImageIO.read(new File(filename));
+            image = ImageIO.read(new File(filename));
 
-            image = img.getSubimage(1400,1600,900,1000);
             binaryImage = image;
         }
         catch (IOException e1)
@@ -74,19 +72,19 @@ public class Image extends JFrame
 
 
         //Create binary image: white = path, black = wall
-        for(int j = 0; j < image.getHeight(); j++){
-            for(int i = 0; i < image.getWidth(); i++){
+        for (int j = 0; j < image.getHeight(); j++)
+        {
+            for (int i = 0; i < image.getWidth(); i++)
+            {
                 rgb = getPixelData(image, i, j);
 
 
-
                 rgbTot = rgb[0] + rgb[1] + rgb[2];
-                if (rgbTot<=700)
+                if (rgbTot <= 700)
                 {
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
-                }
-                else
+                } else
                 {
                     binaryImage.setRGB(i, j, Color.white.getRGB());
                     pixelData[i][j] = 1;
@@ -97,15 +95,16 @@ public class Image extends JFrame
 
     private void openTIFF(String filename)
     {
-        try{
+        try
+        {
             ImageInputStream input = null;
             input = ImageIO.createImageInputStream(new File(filename));
             try
             {
                 Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
-                if(!readers.hasNext())
+                if (!readers.hasNext())
                 {
-                    throw new IllegalArgumentException("No reader for: "+filename);
+                    throw new IllegalArgumentException("No reader for: " + filename);
                 }
 
                 ImageReader reader = readers.next();
@@ -114,7 +113,7 @@ public class Image extends JFrame
                 {
                     reader.setInput(input);
                     ImageReadParam param = reader.getDefaultReadParam();
-                    image = reader.read(0,param);
+                    image = reader.read(0, param);
                     binaryImage = image;
                 }
                 finally
@@ -136,17 +135,16 @@ public class Image extends JFrame
         pixelData = new int[image.getWidth()][image.getHeight()];
         int[] rgb;
 
-        for(int j = 0; j<image.getHeight(); j++)
-            for(int i=0; i<image.getWidth(); i++)
+        for (int j = 0; j < image.getHeight(); j++)
+            for (int i = 0; i < image.getWidth(); i++)
             {
                 rgb = getPixelData(image, i, j);
 
-                if(rgb[0] == 0 && rgb[1] == 40 && rgb[2] == 120)
+                if (rgb[0] == 0 && rgb[1] == 40 && rgb[2] == 120)
                 {
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
-                }
-                else
+                } else
                 {
                     binaryImage.setRGB(i, j, Color.white.getRGB());
                     pixelData[i][j] = 1;
@@ -178,10 +176,12 @@ public class Image extends JFrame
 
             // look for 4 lines (i.e.: the header) and discard them
             int numnewlines = 4;
-            while (numnewlines > 0) {
+            while (numnewlines > 0)
+            {
                 char c;
-                do {
-                    c = (char)(dis.readUnsignedByte());
+                do
+                {
+                    c = (char) (dis.readUnsignedByte());
                 } while (c != '\n');
                 numnewlines--;
             }
@@ -189,32 +189,28 @@ public class Image extends JFrame
             int[][] data2D = new int[picWidth][picHeight];
             pixelData = new int[picWidth][picHeight];
 
-            binaryImage = new BufferedImage(200,400, BufferedImage.TYPE_INT_ARGB);
+            binaryImage = new BufferedImage(4000, 4000, BufferedImage.TYPE_INT_ARGB);
 
             // read the image data
             for (int j = 0; j < picHeight; j++)
                 for (int i = 0; i < picWidth; i++)
                 {
                     data2D[i][j] = dis.readUnsignedByte();
-                    if(i>1500 && i<1700 && j>2000 && j<2400)
+                    if (data2D[i][j] > 205)
                     {
-                        if (data2D[i][j] > 205)
-                        {
-                            pixelData[i-1500][j-2000] = 1;
-                            binaryImage.setRGB(i-1500, j-2000, Color.white.getRGB());
-                        }
-                        else if(data2D[i][j] < 205)
-                        {
-                            pixelData[i-1500][j-2000] = 0;
-                            binaryImage.setRGB(i-1500, j-2000, Color.black.getRGB());
-                        }
-                        else
-                        {
-                            pixelData[i-1500][j-2000] = 0;
-                            binaryImage.setRGB(i-1500, j-2000, Color.gray.getRGB());
-                        }
+                        pixelData[i][j] = 1;
+                        binaryImage.setRGB(i, j, Color.white.getRGB());
+                    } else if (data2D[i][j] < 205)
+                    {
+                        pixelData[i][j] = 0;
+                        binaryImage.setRGB(i, j, Color.black.getRGB());
+                    } else
+                    {
+                        pixelData[i][j] = 0;
+                        binaryImage.setRGB(i, j, Color.gray.getRGB());
                     }
                 }
+
 
         }
         catch (FileNotFoundException e)
@@ -229,23 +225,41 @@ public class Image extends JFrame
 
 
     @Override
-    public void paint(Graphics g){
+    public void paint(Graphics g)
+    {
         super.paint(g);
 //        g.drawImage(image,0,0,null);
-        g.drawImage(binaryImage,0,0,null);
+        g.drawImage(binaryImage, 0, 0, 1000, 1000, null);
     }
 
     public int[] getPixelData(BufferedImage img, int x, int y)
     {
         int argb = img.getRGB(x, y);
 
-        int rgb[] = new int[] {
+        int rgb[] = new int[]{
                 (argb >> 16) & 0xff, //red
-                (argb >>  8) & 0xff, //green
-                (argb      ) & 0xff  //blue
+                (argb >> 8) & 0xff, //green
+                (argb) & 0xff  //blue
         };
 
 //        System.out.println("rgb: " + rgb[0] + " " + rgb[1] + " " + rgb[2]);
         return rgb;
     }
+
+//    public double[] getMouse()
+//    {
+//        double x, y;
+//        this.addMouseListener(new MouseAdapter()
+//        {
+//            @Override
+//            public void mouseClicked(MouseEvent e)
+//            {
+//                x = e.getX();
+//                y = e.getY();
+//            }
+//        }
+//        );
+//        double[] location = new double[]{x,y};
+//        return location;
+//    }
 }

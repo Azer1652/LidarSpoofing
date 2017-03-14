@@ -223,8 +223,9 @@ public class World {
 
     private void getWorldFromImage(){
         Image image = new Image();
-
         pixelData = image.openImage();
+//        MouseListener mouse = new MouseListener();
+//        carLocation = mouse.getMouse();
     }
 
     private void getRandomWorld(){
@@ -294,7 +295,7 @@ public class World {
         {
             case "image":
                 mode = Mode.IMAGE;
-                carLocation = new double[] {100,250};
+                carLocation = new double[] {1700,1850};
                 speed = 1;
                 getWorldFromImage();
 
