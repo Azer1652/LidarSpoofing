@@ -1,8 +1,5 @@
-import com.jogamp.opengl.awt.GLCanvas;
 import world.World;
-import worldview.WorldViewer;
 
-import javax.swing.*;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -24,7 +21,7 @@ public class LidarSpoof {
     static DataSender sender;
     static Thread sendThread = null;
 
-	static public boolean debug_commands = true;
+	static public boolean debug_commands = false;
 	static public boolean debug_dataSender = false;
 	
 	public LidarSpoof(World world) throws IOException, InterruptedException{

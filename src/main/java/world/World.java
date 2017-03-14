@@ -3,8 +3,11 @@ package world;
 import tracing.Hit;
 import tracing.Ray;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.*;
+import java.util.List;
 
 public class World {
 
@@ -15,30 +18,44 @@ public class World {
 
     private int[][] pixelData = new int[4000][4000];
 
-	private List<Segment> segments = new ArrayList<>();
+	public List<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
 	private double data[] = new double[1080];
     private StringBuilder dataString = new StringBuilder();
 
-    private double[] carLocation = new double[]{300,250};
-    //private double[] carLocation = new double[]{0,0};
+    //private double[] carLocation = new double[]{300,250};
+    private double[] carLocation = new double[]{0,0};
     private double currentCarAngleRad = 0;
 
-    //public double speed = 50;
-    public int speed = 1; //in pixels
+    public double speed = 50;
+    //public int speed = 1; //in pixels
     public double turnSpeed = 0.05;
 
     private boolean moveLikeCar = true;
     private boolean up, down, left, right;
+
+    private RandomGen randomGen;
+    private JFrame testFrame;
+    private LineComp lineComp;
 
 	public World(){
 	    up = false;
         down = false;
         left = false;
         right = false;
-		//buildWorld();
-        getWorldFromImage();
+		buildWorld();
+        //getWorldFromImage();
 		//generatePoints();
+
+        lineComp = new LineComp(segments);
+
+        testFrame = new JFrame();
+        testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        Dimension d = new Dimension(800, 800);
+        testFrame.setSize(d);
+        testFrame.add(lineComp, BorderLayout.CENTER);
+        testFrame.setVisible(true);
+
 		updateWorld();
 		encodeData();
 	}
@@ -132,12 +149,15 @@ public class World {
 
         while (i < 1080) {
             //calculate an intersect for each angle
-            //Hit hit = trace(current);
-            Hit hit = tracePixel(current);
+            Hit hit = trace(current);
+            //Hit hit = tracePixel(current);
             data[i]=hit.getTime();
             current -= angleDiffRad;
             i++;
         }
+
+        updateSegments(); // Replaces all segments with latest ones
+        lineComp.update(segments);
     }
 
 	synchronized public void move(KeyEvent e){
@@ -198,6 +218,12 @@ public class World {
         pixelData = image.openImage();
     }
 
+    private void getRandomWorld(){
+        randomGen = new RandomGen(new Point((int) carLocation[0],(int) carLocation[1]));
+        updateSegments(); // Replaces all segments with latest ones
+    }
+}
+
 	private void buildWorld()
     {
 
@@ -235,4 +261,22 @@ public class World {
 		}
         return dataString.toString();
 	}
+
+    public void updateSegments()
+    {
+        GridPiece[][] grid = randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
+        segments.clear();
+
+        for(GridPiece[] gridPieces : grid)
+        {
+            for (GridPiece gridPiece : gridPieces)
+            {
+                if (!gridPiece.segments.isEmpty())
+                {
+                    segments.addAll(gridPiece.segments);
+                }
+
+            }
+        }
+    }
 }

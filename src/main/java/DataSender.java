@@ -6,8 +6,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.print.attribute.standard.OutputDeviceAssigned;
-
 public class DataSender implements Runnable{
 
     public static enum TYPE{
