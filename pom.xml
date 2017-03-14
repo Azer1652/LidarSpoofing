@@ -24,6 +24,12 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.easyinnova</groupId>
+            <artifactId>tifflibrary4java</artifactId>
+            <version>1.8.6</version>
+        </dependency>
     </dependencies>
 
 </project>
