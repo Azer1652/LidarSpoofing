@@ -10,13 +10,16 @@ public class GridPiece
 {
     /** Predefined segments (always 1000 x 1000 size)
      *  rotation = 0 = normal; +1 = 90 rotated clockwise each
-     *  Name        Shape       type        rotation
-     *  Straight    ||          0           0,1
-     *  Corner      /-          1           0,1,2,3
-     *  TCross      T           2           0,1,2,3
-     *  Cross       +           3           0
-     *  End         |=|         4           0
-     *  Init        like cross  5           0
+     *  Name            Shape       type        rotation
+     *  Straight        ||          0           0,1
+     *  Corner          /-          1           0,1,2,3
+     *  TCross          T           2           0,1,2,3
+     *  Cross           +           3           0
+     *  End             |=|         4           0
+     *  Init            like cross  5           0
+     *  DiagonalCross   X           6           0
+     *  Diagonal        /           7           0,1
+     *  ObsTriangle     pole        8           0
      *
      *  Open sides for the different shapes and each rotation
      *              isTop       isBottom    isLeft  isRight
@@ -54,7 +57,8 @@ public class GridPiece
      */
     private int type; // type of predefined segment, -1 = unpredefined
     private int rotation; // only used for predefined segments, -1 = not used
-    public boolean isTop = false, isBottom = false, isLeft = false, isRight = false; // if true, corresponding side is open = can fit
+    public boolean isTop = false, isBottom = false, isLeft = false, isRight = false, // if true, corresponding side is open = can fit
+            isDiagonal0 = false, isDiagonal1 = false, isObsTriangle = false;
     public ArrayList<Segment> segments;
     private Point point; // what gridplace will the gridPiece get
 
@@ -117,6 +121,25 @@ public class GridPiece
             case 4: break; // End: Everything closed
             case 5: isTop = isBottom = isLeft = isRight = true; // Init
                 break;
+            case 6: // Diagonal Cross
+                isDiagonal0 = isDiagonal1 = true;
+                isTop = isBottom = isLeft = isRight = true; // Init
+                break;
+            case 7: // Diagonal
+                switch(rotation)
+                {
+                    case 0: isDiagonal0 = true; // /
+                            isTop = isBottom = isLeft = isRight = true; // Init
+                        break;
+                    case 1: isDiagonal1 = true; // \
+                            isTop = isBottom = isLeft = isRight = true; // Init
+                        break;
+                }
+                break;
+            case 8: // Obstacle Triangle
+                isTop = isBottom = isLeft = isRight = true; // Init
+                isObsTriangle = true;
+                break;
         }
 
         fitParameters[0] = isTop;
@@ -140,5 +163,23 @@ public class GridPiece
 
         if(!isRight)
             segments.add(new Segment(new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y         },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y + 1000 }));
+
+        if(isDiagonal0)
+        {
+            segments.add(new Segment(new double[]{ -10500+1000* point.x       , -10500+1000*point.y         },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y + 1000 }));
+        }
+
+        if(isDiagonal1)
+        {
+            segments.add(new Segment(new double[]{ -10500+1000* point.x       , -10500+1000*point.y + 1000  },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y        }));
+        }
+
+        if(isObsTriangle)
+        {
+            segments.add(new Segment(new double[]{ -10500+1000* point.x + 400 , -10500+1000*point.y + 400   },new double[]{ -10500+1000*point.x + 600  , -10500+1000*point.y + 400  }));
+            segments.add(new Segment(new double[]{ -10500+1000* point.x + 600 , -10500+1000*point.y + 400   },new double[]{ -10500+1000*point.x + 500  , -10500+1000*point.y + 600  }));
+            segments.add(new Segment(new double[]{ -10500+1000* point.x + 400 , -10500+1000*point.y + 400   },new double[]{ -10500+1000*point.x + 500  , -10500+1000*point.y + 600  }));
+        }
+
     }
 }

@@ -14,7 +14,7 @@ public class RandomGen
     private Point location;
     private Point gridLocation;
     private Point prevGridLocation;
-    private int range = 15; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
+    private int range = 10; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
     //todo: Currently range is hardcoded, make it dynamic
     private GridPiece[][] grid; // exists of blocks of 1000x1000 mm (Columns in rows)
 
@@ -189,7 +189,8 @@ public class RandomGen
     // Algorithm used in initialisation and update of the mapgrid
     public void generateRandomGridPieces(Set<Point> points)
     {
-        int chanceStraight = 15, chanceCorner = 15, chanceTCross = 20, chanceCross = 50; // Chances in percent
+        int chanceStraight = 5, chanceCorner = 5, chanceTCross = 5, chanceCross = 50, chanceEnd = 5,
+                chanceDiagonalCross = 5, chanceDiagonal = 5, chanceObsTriangle = 15; // Chances in percent
         boolean[] fitParameters;
         boolean isFitting,isFittingTop,isFittingBottom,isFittingLeft,isFittingRight;
         int tries;
@@ -211,12 +212,15 @@ public class RandomGen
                 rType = rand.nextInt(100) + 1; // type
                 rRotation = rand.nextInt(100) + 1; // rotation
                 /**
-                 * Shape    Chance
-                 * Straight 30%
-                 * Corner   10%
-                 * TCross   20%
-                 * Cross    40%
-                 * End      0%
+                 * Shape            Chance
+                 * Straight         10%
+                 * Corner           10%
+                 * TCross           15%
+                 * Cross            20%
+                 * End              5%
+                 * DiagonalCross    10%
+                 * Diagonal         10%
+                 * ObsTriangle      20%
                  *
                  * Some confusion with the grid row/column vs the actual coordinates, here x/y means row/column!
                  */
@@ -284,9 +288,34 @@ public class RandomGen
                     type = 3;
                     rotation = 0;
                 }
-                else // End shape
+                else if(rType > chanceStraight+chanceCorner+chanceTCross+chanceCross && rType <= chanceStraight+chanceCorner+chanceTCross+chanceCross+chanceEnd) // End shape
                 {
                     type = 4;
+                    rotation = 0;
+                }
+                else if(rType > chanceStraight+chanceCorner+chanceTCross+chanceCross+chanceEnd &&
+                        rType <= chanceStraight+chanceCorner+chanceTCross+chanceCross+chanceEnd+chanceDiagonalCross) // DiagonalCross shape
+                {
+                    type = 6;
+                    rotation = 0;
+                }
+                else if(rType > chanceStraight+chanceCorner+chanceTCross+chanceCross+chanceEnd+chanceDiagonalCross &&
+                        rType <= chanceStraight+chanceCorner+chanceTCross+chanceCross+chanceEnd+chanceDiagonalCross+chanceDiagonal) // Diagonal shape
+                {
+                    if(rRotation > 0 && rRotation <= 50) // Rotation /
+                    {
+                        type = 7;
+                        rotation = 0;
+                    }
+                    else // Rotation \
+                    {
+                        type = 7;
+                        rotation = 1;
+                    }
+                }
+                else // Obstacle Triangle shape
+                {
+                    type = 8;
                     rotation = 0;
                 }
 
