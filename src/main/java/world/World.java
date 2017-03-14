@@ -51,7 +51,13 @@ public class World {
 
     private Hit tracePixel(double angle){
         //set direction
-        Ray ray = new Ray(angle+currentCarAngleRad);
+        double traceAngle =angle + currentCarAngleRad;
+        traceAngle= traceAngle % (2*Math.PI);
+        if(traceAngle < -Math.PI)
+        {
+            traceAngle = traceAngle + 2*Math.PI;
+        }
+        Ray ray = new Ray(traceAngle);
         ray.setLocation(carLocation);
         Hit hit = ray.hitPixel(pixelData);
         return hit;
