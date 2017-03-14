@@ -7,10 +7,10 @@ import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Scanner;
 
 /**
  * Created by Peter on 28/02/2017.
@@ -26,10 +26,10 @@ public class Image extends JFrame
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
-        this.setSize(1900, 1000);
+        this.setSize(1000, 900);
 
 
-        String filename = "hector_slam_map_14-18-36.tiff";
+        String filename = "myMap.pgm";
         String s = filename.substring(filename.lastIndexOf(".") + 1);
         System.out.println(s);
 
@@ -41,6 +41,10 @@ public class Image extends JFrame
         else if(Objects.equals(s,"tiff"))
         {
             openTIFF(filename);
+        }
+        else if(Objects.equals(s, "pgm"))
+        {
+            openPGM(filename);
         }
 
         System.out.println("image opened");
@@ -70,8 +74,8 @@ public class Image extends JFrame
 
 
         //Create binary image: white = path, black = wall
-        for(int j = 0; j <= image.getHeight()-1; j++){
-            for(int i = 0; i <= image.getWidth()-1; i++){
+        for(int j = 0; j < image.getHeight(); j++){
+            for(int i = 0; i < image.getWidth(); i++){
                 rgb = getPixelData(image, i, j);
 
 
@@ -132,8 +136,8 @@ public class Image extends JFrame
         pixelData = new int[image.getWidth()][image.getHeight()];
         int[] rgb;
 
-        for(int j = 0; j<=image.getHeight()-1; j++)
-            for(int i=0; i<=image.getWidth()-1; i++)
+        for(int j = 0; j<image.getHeight(); j++)
+            for(int i=0; i<image.getWidth(); i++)
             {
                 rgb = getPixelData(image, i, j);
 
@@ -148,6 +152,79 @@ public class Image extends JFrame
                     pixelData[i][j] = 1;
                 }
             }
+    }
+
+    private void openPGM(String filename)
+    {
+        try
+        {
+            FileInputStream fis = new FileInputStream(filename);
+            Scanner scan = new Scanner(fis);
+            // Discard the magic number
+            scan.nextLine();
+            // Discard the comment line
+            scan.nextLine();
+            // Read pic width, height and max value
+            int picWidth = scan.nextInt();
+            int picHeight = scan.nextInt();
+            int maxvalue = scan.nextInt();
+
+
+            fis.close();
+
+            // Now parse the file as binary data
+            fis = new FileInputStream(filename);
+            DataInputStream dis = new DataInputStream(fis);
+
+            // look for 4 lines (i.e.: the header) and discard them
+            int numnewlines = 4;
+            while (numnewlines > 0) {
+                char c;
+                do {
+                    c = (char)(dis.readUnsignedByte());
+                } while (c != '\n');
+                numnewlines--;
+            }
+
+            int[][] data2D = new int[picWidth][picHeight];
+            pixelData = new int[picWidth][picHeight];
+
+            binaryImage = new BufferedImage(200,400, BufferedImage.TYPE_INT_ARGB);
+
+            // read the image data
+            for (int j = 0; j < picHeight; j++)
+                for (int i = 0; i < picWidth; i++)
+                {
+                    data2D[i][j] = dis.readUnsignedByte();
+                    if(i>1500 && i<1700 && j>2000 && j<2400)
+                    {
+                        if (data2D[i][j] > 205)
+                        {
+                            pixelData[i-1500][j-2000] = 1;
+                            binaryImage.setRGB(i-1500, j-2000, Color.white.getRGB());
+                        }
+                        else if(data2D[i][j] < 205)
+                        {
+                            pixelData[i-1500][j-2000] = 0;
+                            binaryImage.setRGB(i-1500, j-2000, Color.black.getRGB());
+                        }
+                        else
+                        {
+                            pixelData[i-1500][j-2000] = 0;
+                            binaryImage.setRGB(i-1500, j-2000, Color.gray.getRGB());
+                        }
+                    }
+                }
+
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 
