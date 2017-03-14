@@ -137,14 +137,8 @@ public class Image extends JFrame
             {
                 rgb = getPixelData(image, i, j);
 
-                if(rgb[0] + rgb[1] + rgb[2] < 200)
-                {
-                    System.out.println("Red: "+rgb[0]+" Green: "+rgb[1]+" Blue: "+rgb[2]);
-                }
-
                 if(rgb[0] == 0 && rgb[1] == 40 && rgb[2] == 120)
                 {
-                    System.out.println("black pixel!");
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
                 }
