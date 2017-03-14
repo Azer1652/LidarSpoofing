@@ -15,6 +15,7 @@ public class World {
     private final static double angleStartRad = +Math.toRadians(135); //-0.28;
     //private final static double angleEndRad = Math.PI-angleStartRad;
     private final static double angleDiffRad = Math.toRadians(270)/(1080);
+    private final String args;
 
     private int[][] pixelData = new int[4000][4000];
 
@@ -23,12 +24,10 @@ public class World {
 	private double data[] = new double[1080];
     private StringBuilder dataString = new StringBuilder();
 
-    //private double[] carLocation = new double[]{300,250};
-    private double[] carLocation = new double[]{0,0};
+    private double[] carLocation;
     private double currentCarAngleRad = 0;
 
-    public double speed = 50;
-    //public int speed = 1; //in pixels
+    public double speed;
     public double turnSpeed = 0.05;
 
     private boolean moveLikeCar = true;
@@ -37,25 +36,23 @@ public class World {
     private RandomGen randomGen;
     private JFrame testFrame;
     private LineComp lineComp;
+    private Mode mode;
 
-	public World(){
+
+	public World(String args){
 	    up = false;
         down = false;
         left = false;
         right = false;
+        this.args = args;
+
+        checkMode();
+
 		//buildWorld();
-        getRandomWorld();
-        //getWorldFromImage();
+//        getWorldFromImage();
 		//generatePoints();
 
-        lineComp = new LineComp(segments);
 
-        testFrame = new JFrame();
-        testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        Dimension d = new Dimension(800, 800);
-        testFrame.setSize(d);
-        testFrame.add(lineComp, BorderLayout.CENTER);
-        testFrame.setVisible(true);
 
 		updateWorld();
 		encodeData();
@@ -150,15 +147,26 @@ public class World {
 
         while (i < 1080) {
             //calculate an intersect for each angle
-            Hit hit = trace(current);
-            //Hit hit = tracePixel(current);
+            Hit hit;
+            switch (mode)
+            {
+                case IMAGE:
+                    hit = tracePixel(current);
+                    break;
+                case RANDOM:
+                    hit = trace(current);
+                    updateSegments(); // Replaces all segments with latest ones
+                    lineComp.update(segments);
+                    break;
+                default:
+                    hit = trace(current);
+                    break;
+            }
+
             data[i]=hit.getTime();
             current -= angleDiffRad;
             i++;
         }
-
-        updateSegments(); // Replaces all segments with latest ones
-        lineComp.update(segments);
     }
 
 	synchronized public void move(KeyEvent e){
@@ -222,11 +230,11 @@ public class World {
     private void getRandomWorld(){
         randomGen = new RandomGen(new Point((int) carLocation[0],(int) carLocation[1]));
         updateSegments(); // Replaces all segments with latest ones
+        showWorld();
     }
 
 	private void buildWorld()
     {
-
         segments.add(new Segment(new double[]{-10000, 10000},new double[]{ -10000, -10000}));
         segments.add(new Segment(new double[]{-10000, -10000},new double[]{ 10000, -10000}));
         segments.add(new Segment(new double[]{10000, -10000},new double[]{ 10000, 10000}));
@@ -245,6 +253,7 @@ public class World {
         segments.add(new Segment(new double[]{6000, 7000},new double[]{ 3000, 0}));
         segments.add(new Segment(new double[]{3000, 0},new double[]{ 6000, -7000}));
         segments.add(new Segment(new double[]{6000, -7000},new double[]{ 6000, 7000}));
+        showWorld();
 	}
 	
 	synchronized public String encodeData(){
@@ -275,8 +284,47 @@ public class World {
                 {
                     segments.addAll(gridPiece.segments);
                 }
-
             }
         }
     }
+
+    private void checkMode()
+    {
+        switch (args)
+        {
+            case "image":
+                mode = Mode.IMAGE;
+                carLocation = new double[] {300,250};
+                speed = 1;
+                getWorldFromImage();
+
+                break;
+            case "random":
+                mode = Mode.RANDOM;
+                carLocation = new double[] {0,0};
+                speed = 50;
+                getRandomWorld();
+
+                break;
+            default:
+                mode = Mode.DEBUG;
+                carLocation = new double[] {0,0};
+                speed = 50;
+                buildWorld();
+                break;
+        }
+    }
+
+    private void showWorld()
+    {
+        lineComp = new LineComp(segments);
+
+        testFrame = new JFrame();
+        testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        Dimension d = new Dimension(800, 800);
+        testFrame.setSize(d);
+        testFrame.add(lineComp, BorderLayout.CENTER);
+        testFrame.setVisible(true);
+    }
 }
+

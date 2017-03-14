@@ -189,7 +189,7 @@ public class LidarSpoof {
     }
 	
 	public static void main(String[] args) {
-		World world = new World();
+		World world = new World(args[0]);
 		new Thread(() -> {
 			try {
 				LidarSpoof lidarSpoof = new LidarSpoof(world);
