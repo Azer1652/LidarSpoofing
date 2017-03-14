@@ -43,7 +43,8 @@ public class World {
         down = false;
         left = false;
         right = false;
-		buildWorld();
+		//buildWorld();
+        getRandomWorld();
         //getWorldFromImage();
 		//generatePoints();
 
@@ -222,7 +223,6 @@ public class World {
         randomGen = new RandomGen(new Point((int) carLocation[0],(int) carLocation[1]));
         updateSegments(); // Replaces all segments with latest ones
     }
-}
 
 	private void buildWorld()
     {

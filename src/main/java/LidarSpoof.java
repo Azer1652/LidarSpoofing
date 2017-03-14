@@ -1,5 +1,7 @@
 import world.World;
+import worldview.WorldViewer;
 
+import javax.swing.*;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
