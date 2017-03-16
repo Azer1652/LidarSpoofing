@@ -19,8 +19,10 @@ import java.util.Scanner;
  */
 public class Image extends JFrame
 {
-    BufferedImage image, binaryImage = null;
+    BufferedImage img, image, binaryImage = null;
     int[][] pixelData;
+    double[] location = new double[]{0,0};
+    double x, y, oldX = 0, oldY = 0;
 
     public void Image() {}
 
@@ -31,7 +33,7 @@ public class Image extends JFrame
         this.setSize(1000, 1000);
 
 
-        String filename = "hector_slam_map_14-18-36.tiff";
+        String filename = "basic_localization_stage_ground_truth.png";
         String s = filename.substring(filename.lastIndexOf(".") + 1);
         System.out.println(s);
 
@@ -57,14 +59,17 @@ public class Image extends JFrame
     {
         try
         {
-            image = ImageIO.read(new File(filename));
+            img = ImageIO.read(new File(filename));
 
-            binaryImage = image;
+
         }
         catch (IOException e1)
         {
             e1.printStackTrace();
         }
+
+        image = img.getSubimage(1400,1600,900,1000);
+        binaryImage = image;
 
         pixelData = new int[image.getWidth()][image.getHeight()];
         int[] rgb;
@@ -246,20 +251,45 @@ public class Image extends JFrame
         return rgb;
     }
 
-//    public double[] getMouse()
-//    {
-//        double x, y;
-//        this.addMouseListener(new MouseAdapter()
-//        {
-//            @Override
-//            public void mouseClicked(MouseEvent e)
-//            {
-//                x = e.getX();
-//                y = e.getY();
-//            }
-//        }
-//        );
-//        double[] location = new double[]{x,y};
-//        return location;
-//    }
+    public void getMouse()
+    {
+            this.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseClicked(MouseEvent e)
+                {
+                    double x = e.getX();
+                    double y = e.getY();
+                    setLocationFromMouse(x,y);
+                    System.out.println("Click!");
+                }
+            });
+    }
+
+    private void setLocationFromMouse(double tempX, double tempY)
+    {
+        oldX = x;
+        oldY = y;
+        x = tempX;
+        y = tempY;
+        System.out.println("x: "+x+" y: "+y+" oldX: "+oldX+" oldY: "+oldY);
+    }
+
+    public double[] getLocationFromMouse()
+    {
+
+        return new double[]{x,y};
+    }
+
+    public boolean checkMouseClicked()
+    {
+        if(oldX != x && oldY != y)
+        {
+            oldX = x;
+            oldY = y;
+            return true;
+
+        }
+        return false;
+    }
 }

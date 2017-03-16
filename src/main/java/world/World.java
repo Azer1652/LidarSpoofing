@@ -18,6 +18,7 @@ public class World {
     private final String args;
 
     private int[][] pixelData;
+    private Image image;
 
 	public List<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
@@ -143,6 +144,15 @@ public class World {
             }
         }
 
+        if(image.checkMouseClicked())
+        {
+            double[] tempLocation = image.getLocationFromMouse();
+            if (tempLocation[0] != 0 && tempLocation[1] != 0)
+            {
+                carLocation = tempLocation;
+            }
+        }
+
         int i = 0;
 
         while (i < 1080) {
@@ -222,10 +232,9 @@ public class World {
     }
 
     private void getWorldFromImage(){
-        Image image = new Image();
+        image = new Image();
         pixelData = image.openImage();
-//        MouseListener mouse = new MouseListener();
-//        carLocation = mouse.getMouse();
+        image.getMouse();
     }
 
     private void getRandomWorld(){
@@ -295,7 +304,7 @@ public class World {
         {
             case "image":
                 mode = Mode.IMAGE;
-                carLocation = new double[] {1700,1850};
+                carLocation = new double[] {250,300};
                 speed = 1;
                 getWorldFromImage();
 
