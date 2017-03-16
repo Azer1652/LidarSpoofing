@@ -114,6 +114,15 @@ public class World {
         return segments;
     }
 
+    public int[][] getPixelData() {return pixelData;}
+
+    public Image getImage(){return image;}
+
+    public int[] getDimensions()
+    {
+        return new int[] {image.getWidth(),image.getHeight()};
+    }
+
 	synchronized public void updateWorld(){
         double current = angleStartRad;
 
@@ -144,12 +153,16 @@ public class World {
             }
         }
 
-        if(image.checkMouseClicked())
+        //Image: teleport with mouse click
+        if(args == "image")
         {
-            double[] tempLocation = image.getLocationFromMouse();
-            if (tempLocation[0] != 0 && tempLocation[1] != 0)
+            if (image.checkMouseClicked())
             {
-                carLocation = tempLocation;
+                double[] tempLocation = image.getLocationFromMouse();
+                if (tempLocation[0] != 0 && tempLocation[1] != 0)
+                {
+                    carLocation = tempLocation;
+                }
             }
         }
 

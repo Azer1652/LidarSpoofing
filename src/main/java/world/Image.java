@@ -10,9 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by Peter on 28/02/2017.
@@ -23,6 +22,8 @@ public class Image extends JFrame
     int[][] pixelData;
     double[] location = new double[]{0,0};
     double x, y, oldX = 0, oldY = 0;
+
+    public List<double[]> vertex = new ArrayList<>();
 
     public void Image() {}
 
@@ -89,6 +90,8 @@ public class Image extends JFrame
                 {
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
+                    vertex.add(new double[]{i,0d,j});
+                    vertex.add(new double[]{i,1000d,j});
                 } else
                 {
                     binaryImage.setRGB(i, j, Color.white.getRGB());
@@ -149,6 +152,8 @@ public class Image extends JFrame
                 {
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
+                    vertex.add(new double[]{i,0d,j});
+                    vertex.add(new double[]{i,1000d,j});
                 } else
                 {
                     binaryImage.setRGB(i, j, Color.white.getRGB());
@@ -209,6 +214,8 @@ public class Image extends JFrame
                     {
                         pixelData[i][j] = 0;
                         binaryImage.setRGB(i, j, Color.black.getRGB());
+                        vertex.add(new double[]{i,0d,j});
+                        vertex.add(new double[]{i,1000d,j});
                     } else
                     {
                         pixelData[i][j] = 0;
@@ -291,5 +298,9 @@ public class Image extends JFrame
 
         }
         return false;
+    }
+
+    public List<double[]> getVertex(){
+        return vertex;
     }
 }
