@@ -109,6 +109,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
                 0.0f, 1.0f, 0.0f);
 */
         // Process each segment
+
         for(Segment s : world.getSegments())
         {
             gl.glBegin(GL2.GL_QUADS);
