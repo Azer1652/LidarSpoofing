@@ -302,7 +302,7 @@ public class World {
             case "random":
                 mode = Mode.RANDOM;
                 carLocation = new double[] {0,0};
-                speed = 50;
+                speed = 100;
                 getRandomWorld();
 
                 break;

@@ -15,15 +15,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
-import static java.lang.Math.sin;
 
 /**
  * Created by arthu on 13/03/2017.
@@ -97,7 +94,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         gl.glDisable(GL_DEPTH_TEST); // Turn Depth Testing Off
 
         // Rotate up and down to look up and down
-        gl.glRotated(0, 1.0f, 0, 0);
+        //gl.glRotated(0, 1.0f, 0, 0);
 
         // Player at headingY. Rotate the scene by -headingY instead (add 360 to get a
         // positive angle)
@@ -106,24 +103,24 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         // Player is at (posX, 0, posZ). Translate the scene to (-posX, 0, -posZ)
         // instead.
         gl.glTranslated(-world.getCarLocation()[0], 0, -world.getCarLocation()[1]);
-
-        // Process each triangle
+/*
+        glu.gluLookAt(world.getCarLocation()[0], 500.0f, world.getCarLocation()[1],
+                world.getCarLocation()[0], 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f);
+*/
+        // Process each segment
         for(Segment s : world.getSegments())
         {
             gl.glBegin(GL2.GL_QUADS);
             gl.glNormal3f(0.0f, 0.0f, 1.0f); // Normal pointing out of screen
 
-            gl.glVertex3d(s.vertex.get(0)[0],
-                    s.vertex.get(0)[1], s.vertex.get(0)[2]);
+            gl.glVertex3d(s.vertex.get(0)[0], s.vertex.get(0)[1], s.vertex.get(0)[2]);
 
-            gl.glVertex3d(s.vertex.get(1)[0],
-                    s.vertex.get(1)[1], s.vertex.get(1)[2]);
+            gl.glVertex3d(s.vertex.get(1)[0], s.vertex.get(1)[1], s.vertex.get(1)[2]);
 
-            gl.glVertex3d(s.vertex.get(2)[0],
-                    s.vertex.get(2)[1], s.vertex.get(2)[2]);
+            gl.glVertex3d(s.vertex.get(2)[0], s.vertex.get(2)[1], s.vertex.get(2)[2]);
 
-            gl.glVertex3d(s.vertex.get(3)[0],
-                    s.vertex.get(3)[1], s.vertex.get(3)[2]);
+            gl.glVertex3d(s.vertex.get(3)[0], s.vertex.get(3)[1], s.vertex.get(3)[2]);
         }
         
         /*
