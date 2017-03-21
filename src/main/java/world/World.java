@@ -154,13 +154,14 @@ public class World {
         }
 
         //Image: teleport with mouse click
-        if(args == "image")
+        if(Objects.equals(args, "image"))
         {
             if (image.checkMouseClicked())
             {
                 double[] tempLocation = image.getLocationFromMouse();
                 if (tempLocation[0] != 0 && tempLocation[1] != 0)
                 {
+                    System.out.println("Override!");
                     carLocation = tempLocation;
                 }
             }

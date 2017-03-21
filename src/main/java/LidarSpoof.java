@@ -1,3 +1,4 @@
+import org.opencv.core.Core;
 import world.World;
 import worldview.WorldViewer;
 
@@ -25,6 +26,7 @@ public class LidarSpoof {
 
 	static public boolean debug_commands = false;
 	static public boolean debug_dataSender = false;
+
 	
 	public LidarSpoof(World world) throws IOException, InterruptedException{
 		this.world = world;
@@ -189,6 +191,9 @@ public class LidarSpoof {
     }
 	
 	public static void main(String[] args) {
+
+//		System.loadLibrary("opencv-2.4.1");
+
 		World world = new World(args[0]);
 		new Thread(() -> {
 			try {

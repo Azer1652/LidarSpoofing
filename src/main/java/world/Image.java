@@ -1,5 +1,14 @@
 package world;
 
+import com.sun.javafx.geom.Vec2f;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
@@ -13,6 +22,11 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
+import static org.opencv.core.Core.line;
+import static org.opencv.highgui.Highgui.*;
+import static org.opencv.imgproc.Imgproc.*;
+
+
 /**
  * Created by Peter on 28/02/2017.
  */
@@ -22,10 +36,13 @@ public class Image extends JFrame
     int[][] pixelData;
     double[] location = new double[]{0,0};
     double x, y, oldX = 0, oldY = 0;
+    boolean mouseClicked = false;
 
     public List<double[]> vertex = new ArrayList<>();
 
     public void Image() {}
+
+
 
     public int[][] openImage()
     {
@@ -51,10 +68,15 @@ public class Image extends JFrame
 
         System.out.println("image opened");
 
+        System.out.println("Detecting edges...");
+//        detectEdges();
+
         this.setVisible(true);
 
         return pixelData;
     }
+
+
 
     private void openPNG(String filename)
     {
@@ -86,12 +108,12 @@ public class Image extends JFrame
 
 
                 rgbTot = rgb[0] + rgb[1] + rgb[2];
-                if (rgbTot <= 700)
+                if (rgbTot <= 200)
                 {
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
                     vertex.add(new double[]{i,0d,j});
-                    vertex.add(new double[]{i,1000d,j});
+                    vertex.add(new double[]{i,10d,j});
                 } else
                 {
                     binaryImage.setRGB(i, j, Color.white.getRGB());
@@ -236,6 +258,60 @@ public class Image extends JFrame
     }
 
 
+//    private void detectEdges()
+//    {
+//        // load the image
+//        Mat img = imread("basic_localization_stage_ground_truth.png");
+//
+//        // generate gray scale and blur
+//        Mat gray = new Mat();
+//        Imgproc.cvtColor(img, gray, Imgproc.COLOR_BGR2GRAY);
+//        Imgproc.blur(gray, gray, new Size(3, 3));
+//
+//        // detect the edges
+//        Mat edges = new Mat();
+//        int lowThreshold = 50;
+//        int ratio = 3;
+//        Imgproc.Canny(gray, edges, lowThreshold, lowThreshold * ratio);
+//
+//        Mat lines = new Mat();
+//        Imgproc.HoughLinesP(edges, lines, 1, Math.PI / 180, 50, 50, 10);
+//
+//        for(int i = 0; i < lines.cols(); i++)
+//        {
+//            double[] val = lines.get(0, i);
+//            Core.line(img, new Point(val[0], val[1]), new Point(val[2], val[3]), new Scalar(0, 0, 255), 2);
+//        }
+//
+//        System.out.println(lines.get(0,0)[0] + " - " + lines.get(0,0)[1]);
+//
+//        System.out.println();
+
+
+
+//
+//        Mat src = imread("basic_localization_stage_ground_truth.png",0);
+//        Mat dst = new Mat();
+//        Mat cdst = new Mat();
+//
+//        ArrayList<Vec2f> lines = null;
+//        Imgproc.HoughLines(src, lines, 1, Math.PI/180,100,0,0);
+//
+//        for( int i = 0; i < lines.size(); i++ )
+//        {
+//            float rho = lines[i][0], theta = lines[i][1];
+//            Point pt1 = null, pt2 = null;
+//            double a = Math.cos(theta), b = Math.sin(theta);
+//            double x0 = a*rho, y0 = b*rho;
+//            pt1.x = (int) Math.round(x0 + 1000*(-b));
+//            pt1.y = (int) Math.round(y0 + 1000*(a));
+//            pt2.x = (int) Math.round(x0 - 1000*(-b));
+//            pt2.y = (int) Math.round(y0 - 1000*(a));
+//            line( cdst, pt1, pt2, Scalar(0,0,255), 3, CV_AA);
+//        }
+//    }
+
+
     @Override
     public void paint(Graphics g)
     {
@@ -275,6 +351,7 @@ public class Image extends JFrame
 
     private void setLocationFromMouse(double tempX, double tempY)
     {
+        mouseClicked = true;
         oldX = x;
         oldY = y;
         x = tempX;
@@ -290,8 +367,9 @@ public class Image extends JFrame
 
     public boolean checkMouseClicked()
     {
-        if(oldX != x && oldY != y)
+        if(mouseClicked || oldX != x && oldY != y)
         {
+            mouseClicked = false;
             oldX = x;
             oldY = y;
             return true;

@@ -166,18 +166,20 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
 
         //Process each pixel
         List<double[]> pixels = world.getImage().getVertex();
-        ListIterator pixelsIterator = pixels.listIterator();
+        Iterator<double[]> pixelsIterator = pixels.listIterator();
 
         while(pixelsIterator.hasNext())
         {
+            double[] temp = pixelsIterator.next();
             gl.glBegin(GL2.GL_LINES);
             gl.glNormal3f(0.0f, 0.0f, 1.0f); // Normal pointing out of screen
 
-            gl.glVertex3d(world.getImage().vertex.get(0)[0],
-                    world.getImage().vertex.get(0)[1], world.getImage().vertex.get(0)[2]);
 
-            gl.glVertex3d(world.getImage().vertex.get(1)[0],
-                    world.getImage().vertex.get(1)[1], world.getImage().vertex.get(1)[2]);
+            gl.glVertex3d(temp[0],temp[1],temp[2]);
+
+            temp = pixelsIterator.next();
+
+            gl.glVertex3d(temp[0],temp[1],temp[2]);
         }
 
         gl.glEnd();
