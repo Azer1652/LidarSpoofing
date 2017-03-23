@@ -270,16 +270,12 @@ public class Image extends JFrame
         //colorDst = cvCreateImage(cvGetSize(src), src.depth(), 3);
 
         cvCanny(src, between, 50, 200, 3);
-        //cvCvtColor(dst, colorDst, CV_GRAY2BGR);
+        //cvCvtColor(dst, colorDst, CV_GRAY2BGR); // Only needed when the image is not in grayscale
 
         System.out.println("Using the Probabilistic Hough Transform");
-        //lines = cvHoughLines2(dst, storage, CV_HOUGH_PROBABILISTIC, 1, Math.PI / 180, 40, 50, 10, 0, CV_PI);
+        // 3th and 4th last parameter can be tweaked (param1 and 2 for probabilistic Hough transform: http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlines#houghlines
         lines = cvHoughLines2(between, storage, CV_HOUGH_PROBABILISTIC, 1, Math.PI / 180, 40, 5, 20, 0, CV_PI);
         for (int i = 0; i < lines.total(); i++) {
-            // Based on JavaCPP, the equivalent of the C code:
-            // CvPoint* line = (CvPoint*)cvGetSeqElem(lines,i);
-            // CvPoint first=line[0], second=line[1]
-            // is:
             Pointer line = cvGetSeqElem(lines, i);
             CvPoint pt1  = new CvPoint(line).position(0);
             CvPoint pt2  = new CvPoint(line).position(1);
@@ -291,11 +287,9 @@ public class Image extends JFrame
             segments.add(new Segment(new double[]{pt1.x(), pt1.y()},new double[]{pt2.x(), pt2.y()}));
         }
 
-        edge.showImage(edgeConverter.convert(between));
-        hough.showImage(houghConverter.convert(dst));
-//
-//        edge.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        hough.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //Uncomment to see the edge detection and Hough transform result
+        //edge.showImage(edgeConverter.convert(between));
+        //hough.showImage(houghConverter.convert(dst));
 
         return segments;
     }

@@ -46,8 +46,8 @@ public class World {
         left = false;
         right = false;
         this.args = args;
-
         checkMode();
+        new SDF(segments); // Makes sdformat file
 
 		//buildWorld();
 //        getWorldFromImage();
@@ -181,6 +181,7 @@ public class World {
                 case RANDOM:
                     hit = trace(current);
                     updateSegments(); // Replaces all segments with latest ones
+                    new SDF(segments); // Makes sdformat file
                     lineComp.update(segments);
                     break;
                 default:

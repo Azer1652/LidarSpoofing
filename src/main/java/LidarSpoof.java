@@ -29,7 +29,6 @@ public class LidarSpoof {
 
 	
 	public LidarSpoof(World world) throws IOException, InterruptedException{
-		new SDF();
 		this.world = world;
 	    sender = new DataSender(connection, world);
 
@@ -58,7 +57,6 @@ public class LidarSpoof {
 			/*System.out.println("Received: " + clientSentence);
             capitalizedSentence = clientSentence.toUpperCase() + "\n";
             outToClient.writeBytes(capitalizedSentence);*/
-			
 		}
 	}
 	
@@ -192,9 +190,6 @@ public class LidarSpoof {
     }
 	
 	public static void main(String[] args) {
-
-//		System.loadLibrary("opencv-2.4.1");
-
 		World world = new World(args[0]);
 		new Thread(() -> {
 			try {
@@ -209,8 +204,5 @@ public class LidarSpoof {
 				WorldViewer worldViewer = new WorldViewer(world, 600, 600);
 			}
 		});
-		//new World();
-
 	}
-
 }
