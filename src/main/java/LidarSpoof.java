@@ -1,3 +1,4 @@
+import world.SDF; // temp
 import world.World;
 import worldview.WorldViewer;
 
@@ -28,6 +29,7 @@ public class LidarSpoof {
 
 	
 	public LidarSpoof(World world) throws IOException, InterruptedException{
+		new SDF();
 		this.world = world;
 	    sender = new DataSender(connection, world);
 
