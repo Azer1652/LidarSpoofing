@@ -8,14 +8,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
-
-import java.awt.*;
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import static java.lang.Math.*;
-
 
 /**
  * SDF created by Jan De Laet on 23/03/2017.

@@ -53,8 +53,6 @@ public class World {
 //        getWorldFromImage();
 		//generatePoints();
 
-
-
 		updateWorld();
 		encodeData();
 	}
