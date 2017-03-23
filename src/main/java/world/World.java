@@ -20,7 +20,7 @@ public class World {
     private int[][] pixelData;
     private Image image;
 
-	public List<Segment> segments = new ArrayList<>();
+	public ArrayList<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
 	private double data[] = new double[1080];
     private StringBuilder dataString = new StringBuilder();
@@ -68,7 +68,8 @@ public class World {
     private Hit tracePixel(double angle){
         //set direction
         double traceAngle =angle + currentCarAngleRad;
-        traceAngle= traceAngle % (2*Math.PI);
+
+        traceAngle = traceAngle % (2*Math.PI);
         if(traceAngle < -Math.PI)
         {
             traceAngle = traceAngle + 2*Math.PI;
@@ -175,7 +176,7 @@ public class World {
             switch (mode)
             {
                 case IMAGE:
-                    hit = tracePixel(current);
+                    hit = trace(current);
                     break;
                 case RANDOM:
                     hit = trace(current);
@@ -247,7 +248,7 @@ public class World {
 
     private void getWorldFromImage(){
         image = new Image();
-        pixelData = image.openImage();
+        segments = image.openImage();
         image.getMouse();
     }
 
@@ -277,7 +278,6 @@ public class World {
         segments.add(new Segment(new double[]{6000, 7000},new double[]{ 3000, 0}));
         segments.add(new Segment(new double[]{3000, 0},new double[]{ 6000, -7000}));
         segments.add(new Segment(new double[]{6000, -7000},new double[]{ 6000, 7000}));
-        showWorld();
 	}
 	
 	synchronized public String encodeData(){

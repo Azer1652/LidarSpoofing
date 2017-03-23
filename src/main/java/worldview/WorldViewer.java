@@ -83,8 +83,8 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
 
     @Override
     public void display(GLAutoDrawable drawable) {
-//        render(drawable);
-        renderImage(drawable);
+        render(drawable);
+        //renderImage(drawable);
         updateWorld();
 
     }

@@ -1,13 +1,10 @@
 package world;
 
-import com.sun.javafx.geom.Vec2f;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
+import org.bytedeco.javacpp.*;
+import org.bytedeco.javacv.*;
+import static org.bytedeco.javacpp.opencv_core.*;
+import static org.bytedeco.javacpp.opencv_imgproc.*;
+import static org.bytedeco.javacpp.opencv_imgcodecs.*;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -21,11 +18,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-
-import static org.opencv.core.Core.line;
-import static org.opencv.highgui.Highgui.*;
-import static org.opencv.imgproc.Imgproc.*;
-
 
 /**
  * Created by Peter on 28/02/2017.
@@ -44,7 +36,7 @@ public class Image extends JFrame
 
 
 
-    public int[][] openImage()
+    public ArrayList<Segment> openImage()
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
@@ -66,6 +58,8 @@ public class Image extends JFrame
             openPGM(filename);
         }
 
+
+
         System.out.println("image opened");
 
         System.out.println("Detecting edges...");
@@ -73,7 +67,7 @@ public class Image extends JFrame
 
         this.setVisible(true);
 
-        return pixelData;
+        return houghLines(filename);
     }
 
 
@@ -257,6 +251,54 @@ public class Image extends JFrame
         }
     }
 
+    private ArrayList<Segment> houghLines(String filename)
+    {
+        CvSeq lines = new CvSeq();
+        IplImage src = cvLoadImage(filename, 0);
+        IplImage between;
+        IplImage dst;
+        CvMemStorage storage = cvCreateMemStorage(0);
+        CanvasFrame edge = new CanvasFrame("Edge");
+        CanvasFrame hough = new CanvasFrame("Lines");
+        OpenCVFrameConverter.ToIplImage edgeConverter = new OpenCVFrameConverter.ToIplImage();
+        OpenCVFrameConverter.ToIplImage houghConverter = new OpenCVFrameConverter.ToIplImage();
+
+        ArrayList<Segment> segments = new ArrayList<>();
+
+        between = cvCreateImage(cvGetSize(src), src.depth(), 1);
+        dst = cvCreateImage(cvGetSize(src), src.depth(), 3);
+        //colorDst = cvCreateImage(cvGetSize(src), src.depth(), 3);
+
+        cvCanny(src, between, 50, 200, 3);
+        //cvCvtColor(dst, colorDst, CV_GRAY2BGR);
+
+        System.out.println("Using the Probabilistic Hough Transform");
+        //lines = cvHoughLines2(dst, storage, CV_HOUGH_PROBABILISTIC, 1, Math.PI / 180, 40, 50, 10, 0, CV_PI);
+        lines = cvHoughLines2(between, storage, CV_HOUGH_PROBABILISTIC, 1, Math.PI / 180, 40, 5, 20, 0, CV_PI);
+        for (int i = 0; i < lines.total(); i++) {
+            // Based on JavaCPP, the equivalent of the C code:
+            // CvPoint* line = (CvPoint*)cvGetSeqElem(lines,i);
+            // CvPoint first=line[0], second=line[1]
+            // is:
+            Pointer line = cvGetSeqElem(lines, i);
+            CvPoint pt1  = new CvPoint(line).position(0);
+            CvPoint pt2  = new CvPoint(line).position(1);
+
+            System.out.println("Line spotted: ");
+            System.out.println("\t pt1: " + pt1);
+            System.out.println("\t pt2: " + pt2);
+            cvLine(dst, pt1, pt2, CV_RGB(255, 0, 0), 1, CV_AA, 0); // draw the segment on the image
+            segments.add(new Segment(new double[]{pt1.x(), pt1.y()},new double[]{pt2.x(), pt2.y()}));
+        }
+
+        edge.showImage(edgeConverter.convert(between));
+        hough.showImage(houghConverter.convert(dst));
+//
+//        edge.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        hough.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        return segments;
+    }
 
 //    private void detectEdges()
 //    {

@@ -1,4 +1,3 @@
-import org.opencv.core.Core;
 import world.World;
 import worldview.WorldViewer;
 
