@@ -4,7 +4,6 @@ import org.bytedeco.javacpp.*;
 import org.bytedeco.javacv.*;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
-import static org.bytedeco.javacpp.opencv_imgcodecs.*;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReadParam;
@@ -42,8 +41,10 @@ public class Image extends JFrame
         this.setResizable(true);
         this.setSize(1000, 1000);
 
-
         String filename = "basic_localization_stage_ground_truth.png";
+//        String filename = "hector_slam_map_14-00-31.tiff";
+//        String filename = "hector_slam_map_14-18-36.tiff";
+//      String filename = "myMap.pgm";
         String s = filename.substring(filename.lastIndexOf(".") + 1);
         System.out.println(s);
 
@@ -58,8 +59,6 @@ public class Image extends JFrame
             openPGM(filename);
         }
 
-
-
         System.out.println("image opened");
 
         System.out.println("Detecting edges...");
@@ -67,18 +66,14 @@ public class Image extends JFrame
 
         this.setVisible(true);
 
-        return houghLines(filename);
+        return houghLines();
     }
-
-
 
     private void openPNG(String filename)
     {
         try
         {
             img = ImageIO.read(new File(filename));
-
-
         }
         catch (IOException e1)
         {
@@ -102,7 +97,7 @@ public class Image extends JFrame
 
 
                 rgbTot = rgb[0] + rgb[1] + rgb[2];
-                if (rgbTot <= 200)
+                if (rgbTot <= 700)
                 {
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
@@ -164,7 +159,9 @@ public class Image extends JFrame
             {
                 rgb = getPixelData(image, i, j);
 
-                if (rgb[0] == 0 && rgb[1] == 40 && rgb[2] == 120)
+                if (rgb[0] == 0 && rgb[1] == 40 && rgb[2] == 120 ||
+                    rgb[0] == 226 && rgb[1] == 226 && rgb[2] == 227 ||
+                    rgb[0] == 237 && rgb[1] == 237 && rgb[2] == 238)
                 {
                     binaryImage.setRGB(i, j, Color.black.getRGB());
                     pixelData[i][j] = 0;
@@ -176,7 +173,14 @@ public class Image extends JFrame
                     pixelData[i][j] = 1;
                 }
             }
-    }
+
+        for(int a = 0; a<300; a++)
+            for(int b = 0; b<135; b++)
+                binaryImage.setRGB(a, b, Color.black.getRGB());
+        BufferedImage convertedImage = new BufferedImage(binaryImage.getWidth(),binaryImage.getHeight(),10); // PNG TYPE 10!
+        convertedImage.getGraphics().drawImage(binaryImage,0,0,null);
+        binaryImage = convertedImage;
+}
 
     private void openPGM(String filename)
     {
@@ -239,57 +243,48 @@ public class Image extends JFrame
                     }
                 }
 
+            BufferedImage convertedImage = new BufferedImage(binaryImage.getWidth(),binaryImage.getHeight(),10); // PNG TYPE 10!
+            convertedImage.getGraphics().drawImage(binaryImage,0,0,null);
+            binaryImage = convertedImage;
 
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
     }
 
-    private ArrayList<Segment> houghLines(String filename)
+    private ArrayList<Segment> houghLines()
     {
-        CvSeq lines = new CvSeq();
-        IplImage src = cvLoadImage(filename, 0);
-        IplImage between;
-        IplImage dst;
+        CvSeq lines;
+        OpenCVFrameConverter.ToIplImage iplConverter = new OpenCVFrameConverter.ToIplImage();
+        Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
         CvMemStorage storage = cvCreateMemStorage(0);
         CanvasFrame edge = new CanvasFrame("Edge");
         CanvasFrame hough = new CanvasFrame("Lines");
         OpenCVFrameConverter.ToIplImage edgeConverter = new OpenCVFrameConverter.ToIplImage();
         OpenCVFrameConverter.ToIplImage houghConverter = new OpenCVFrameConverter.ToIplImage();
-
         ArrayList<Segment> segments = new ArrayList<>();
+        IplImage src = iplConverter.convert(java2DFrameConverter.convert(binaryImage)); // Convert from binaryImage format
+        IplImage dst = cvCreateImage(cvGetSize(src), src.depth(), 3); // Destination image
 
-        between = cvCreateImage(cvGetSize(src), src.depth(), 1);
-        dst = cvCreateImage(cvGetSize(src), src.depth(), 3);
-        //colorDst = cvCreateImage(cvGetSize(src), src.depth(), 3);
+        cvNot(src,src); // Invert image: Black to white, White to black
+        cvCanny(src, src, 50, 200, 3); // Canny edge detection
+        IplConvKernel element = cvCreateStructuringElementEx(2,2,0,0,CV_SHAPE_RECT); // rectangle, 2x2 size
+        cvDilate(src,src,element,1); // Dilate once to thicken the pixels for better houghlines recognition
 
-        cvCanny(src, between, 50, 200, 3);
-        //cvCvtColor(dst, colorDst, CV_GRAY2BGR); // Only needed when the image is not in grayscale
-
-        System.out.println("Using the Probabilistic Hough Transform");
-        // 3th and 4th last parameter can be tweaked (param1 and 2 for probabilistic Hough transform: http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlines#houghlines
-        lines = cvHoughLines2(between, storage, CV_HOUGH_PROBABILISTIC, 1, Math.PI / 180, 40, 5, 20, 0, CV_PI);
+        // Using Hough Probabilistic transform: http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlines#houghlines
+        // Param. 6: Threshold (20), Param. 7: Minimum Line Length (1, lower has no effect), Param. 8: Max Line Gap (10)
+        lines = cvHoughLines2(src, storage, CV_HOUGH_PROBABILISTIC, 1, Math.PI / 180, 20, 1, 10, 0, CV_PI);
         for (int i = 0; i < lines.total(); i++) {
             Pointer line = cvGetSeqElem(lines, i);
             CvPoint pt1  = new CvPoint(line).position(0);
             CvPoint pt2  = new CvPoint(line).position(1);
-
-            System.out.println("Line spotted: ");
-            System.out.println("\t pt1: " + pt1);
-            System.out.println("\t pt2: " + pt2);
-            cvLine(dst, pt1, pt2, CV_RGB(255, 0, 0), 1, CV_AA, 0); // draw the segment on the image
-            segments.add(new Segment(new double[]{pt1.x(), pt1.y()},new double[]{pt2.x(), pt2.y()}));
+            cvLine(dst, pt1, pt2, CV_RGB(255, 0, 0), 1, CV_AA, 0); // draw the segment on the image (for own check)
+            segments.add(new Segment(new double[]{pt1.x(), pt1.y()},new double[]{pt2.x(), pt2.y()})); // Adding segments to list, rescaling if needed
         }
-
-        //Uncomment to see the edge detection and Hough transform result
-        //edge.showImage(edgeConverter.convert(between));
-        //hough.showImage(houghConverter.convert(dst));
+        //Uncomment to see the edge detection and/or Hough transform result
+        //edge.showImage(edgeConverter.convert(src));
+        hough.showImage(houghConverter.convert(dst));
 
         return segments;
     }
@@ -298,7 +293,6 @@ public class Image extends JFrame
     public void paint(Graphics g)
     {
         super.paint(g);
-//        g.drawImage(image,0,0,null);
         g.drawImage(binaryImage, 0, 0, 1000, 1000, null);
     }
 
@@ -318,17 +312,17 @@ public class Image extends JFrame
 
     public void getMouse()
     {
-            this.addMouseListener(new MouseAdapter()
+        this.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
             {
-                @Override
-                public void mouseClicked(MouseEvent e)
-                {
-                    double x = e.getX();
-                    double y = e.getY();
-                    setLocationFromMouse(x,y);
-                    System.out.println("Click!");
-                }
-            });
+                double x = e.getX();
+                double y = e.getY();
+                setLocationFromMouse(x,y);
+                System.out.println("Click!");
+            }
+        });
     }
 
     private void setLocationFromMouse(double tempX, double tempY)

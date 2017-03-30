@@ -179,7 +179,7 @@ public class World {
                 case RANDOM:
                     hit = trace(current);
                     updateSegments(); // Replaces all segments with latest ones
-                    new SDF(segments); // Makes sdformat file
+                    //new SDF(segments); // Makes sdformat file todo: make a new .world file without overfloading the system
                     lineComp.update(segments);
                     break;
                 default:

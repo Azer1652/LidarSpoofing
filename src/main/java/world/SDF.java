@@ -101,7 +101,7 @@ public class SDF
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         DOMSource source = new DOMSource(doc);
-        transformer.transform(source, new StreamResult(new File("worldmap.sdf")));
+        transformer.transform(source, new StreamResult(new File("worldmap.world")));
         transformer.transform(source, new StreamResult(System.out)); // Output to console for testing
     }
 
