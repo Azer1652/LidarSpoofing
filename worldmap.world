@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<sdf version="1.6">
+  <model name="Worldsegments">
+    <static>1</static>
+    <pose frame="">0 0 0 0 0 0</pose>
+    <link name="Wall_0">
+      <pose frame="">-10000.0 0.0 5.0 0 0 -1.5707964</pose>
+      <collision name="Wall_0_Collision">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_0_Visual">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_1">
+      <pose frame="">0.0 -10000.0 5.0 0 0 0.0</pose>
+      <collision name="Wall_1_Collision">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_1_Visual">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_2">
+      <pose frame="">10000.0 0.0 5.0 0 0 1.5707964</pose>
+      <collision name="Wall_2_Collision">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_2_Visual">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_3">
+      <pose frame="">0.0 10000.0 5.0 0 0 -0.0</pose>
+      <collision name="Wall_3_Collision">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_3_Visual">
+        <geometry>
+          <box>
+            <size>20000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_4">
+      <pose frame="">-6000.0 4000.0 5.0 0 0 -1.5707964</pose>
+      <collision name="Wall_4_Collision">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_4_Visual">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_5">
+      <pose frame="">-4000.0 2000.0 5.0 0 0 0.0</pose>
+      <collision name="Wall_5_Collision">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_5_Visual">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_6">
+      <pose frame="">-2000.0 4000.0 5.0 0 0 1.5707964</pose>
+      <collision name="Wall_6_Collision">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_6_Visual">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_7">
+      <pose frame="">-4000.0 6000.0 5.0 0 0 -0.0</pose>
+      <collision name="Wall_7_Collision">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_7_Visual">
+        <geometry>
+          <box>
+            <size>4000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_8">
+      <pose frame="">-4500.0 -3500.0 5.0 0 0 0.7853982</pose>
+      <collision name="Wall_8_Collision">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_8_Visual">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_9">
+      <pose frame="">-4500.0 -4500.0 5.0 0 0 -0.7853982</pose>
+      <collision name="Wall_9_Collision">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_9_Visual">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_10">
+      <pose frame="">-3500.0 -4500.0 5.0 0 0 0.7853982</pose>
+      <collision name="Wall_10_Collision">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_10_Visual">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_11">
+      <pose frame="">-3500.0 -3500.0 5.0 0 0 -0.7853982</pose>
+      <collision name="Wall_11_Collision">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_11_Visual">
+        <geometry>
+          <box>
+            <size>1414.2136 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_12">
+      <pose frame="">4500.0 3500.0 5.0 0 0 1.1659045</pose>
+      <collision name="Wall_12_Collision">
+        <geometry>
+          <box>
+            <size>7615.773 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_12_Visual">
+        <geometry>
+          <box>
+            <size>7615.773 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_13">
+      <pose frame="">4500.0 -3500.0 5.0 0 0 -1.1659045</pose>
+      <collision name="Wall_13_Collision">
+        <geometry>
+          <box>
+            <size>7615.773 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_13_Visual">
+        <geometry>
+          <box>
+            <size>7615.773 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <link name="Wall_14">
+      <pose frame="">6000.0 0.0 5.0 0 0 1.5707964</pose>
+      <collision name="Wall_14_Collision">
+        <geometry>
+          <box>
+            <size>14000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="Wall_14_Visual">
+        <geometry>
+          <box>
+            <size>14000.0 0.5 10.0</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
