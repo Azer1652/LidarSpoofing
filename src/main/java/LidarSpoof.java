@@ -2,15 +2,12 @@ import world.World;
 import worldview.WorldViewer;
 
 import javax.swing.*;
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.server.ExportException;
-
 
 public class LidarSpoof {
 	ServerSocket initSocket;
@@ -25,6 +22,7 @@ public class LidarSpoof {
 
 	static public boolean debug_commands = false;
 	static public boolean debug_dataSender = false;
+
 	
 	public LidarSpoof(World world) throws IOException, InterruptedException{
 		this.world = world;
@@ -55,7 +53,6 @@ public class LidarSpoof {
 			/*System.out.println("Received: " + clientSentence);
             capitalizedSentence = clientSentence.toUpperCase() + "\n";
             outToClient.writeBytes(capitalizedSentence);*/
-			
 		}
 	}
 	
@@ -203,8 +200,5 @@ public class LidarSpoof {
 				WorldViewer worldViewer = new WorldViewer(world, 600, 600);
 			}
 		});
-		//new World();
-
 	}
-
 }

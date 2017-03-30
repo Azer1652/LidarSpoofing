@@ -17,7 +17,8 @@ public class World {
     private final static double angleDiffRad = Math.toRadians(270)/(1080);
     private final String args;
 
-    private int[][] pixelData = new int[4000][4000];
+    private int[][] pixelData;
+    private Image image;
 
 	public ArrayList<Segment> segments = new ArrayList<>();
     //List<double[]> uniquePoints = new ArrayList<>();
@@ -45,14 +46,12 @@ public class World {
         left = false;
         right = false;
         this.args = args;
-
         checkMode();
+        new SDF(segments); // Makes sdformat file
 
 		//buildWorld();
 //        getWorldFromImage();
 		//generatePoints();
-
-
 
 		updateWorld();
 		encodeData();
@@ -67,7 +66,8 @@ public class World {
     private Hit tracePixel(double angle){
         //set direction
         double traceAngle =angle + currentCarAngleRad;
-        traceAngle= traceAngle % (2*Math.PI);
+
+        traceAngle = traceAngle % (2*Math.PI);
         if(traceAngle < -Math.PI)
         {
             traceAngle = traceAngle + 2*Math.PI;
@@ -113,6 +113,15 @@ public class World {
         return segments;
     }
 
+    public int[][] getPixelData() {return pixelData;}
+
+    public Image getImage(){return image;}
+
+    public int[] getDimensions()
+    {
+        return new int[] {image.getWidth(),image.getHeight()};
+    }
+
 	synchronized public void updateWorld(){
         double current = angleStartRad;
 
@@ -143,6 +152,20 @@ public class World {
             }
         }
 
+        //Image: teleport with mouse click
+        if(Objects.equals(args, "image"))
+        {
+            if (image.checkMouseClicked())
+            {
+                double[] tempLocation = image.getLocationFromMouse();
+                if (tempLocation[0] != 0 && tempLocation[1] != 0)
+                {
+                    System.out.println("Override!");
+                    carLocation = tempLocation;
+                }
+            }
+        }
+
         int i = 0;
 
         while (i < 1080) {
@@ -151,11 +174,12 @@ public class World {
             switch (mode)
             {
                 case IMAGE:
-                    hit = tracePixel(current);
+                    hit = trace(current);
                     break;
                 case RANDOM:
                     hit = trace(current);
                     updateSegments(); // Replaces all segments with latest ones
+                    //new SDF(segments); // Makes sdformat file todo: make a new .world file without overfloading the system
                     lineComp.update(segments);
                     break;
                 default:
@@ -222,9 +246,9 @@ public class World {
     }
 
     private void getWorldFromImage(){
-        Image image = new Image();
-
-        pixelData = image.openImage();
+        image = new Image();
+        segments = image.openImage();
+        image.getMouse();
     }
 
     private void getRandomWorld(){
@@ -253,7 +277,6 @@ public class World {
         segments.add(new Segment(new double[]{6000, 7000},new double[]{ 3000, 0}));
         segments.add(new Segment(new double[]{3000, 0},new double[]{ 6000, -7000}));
         segments.add(new Segment(new double[]{6000, -7000},new double[]{ 6000, 7000}));
-        showWorld();
 	}
 	
 	synchronized public String encodeData(){
@@ -294,7 +317,7 @@ public class World {
         {
             case "image":
                 mode = Mode.IMAGE;
-                carLocation = new double[] {300,250};
+                carLocation = new double[] {250,300};
                 speed = 1;
                 getWorldFromImage();
 
@@ -302,7 +325,7 @@ public class World {
             case "random":
                 mode = Mode.RANDOM;
                 carLocation = new double[] {0,0};
-                speed = 100;
+                speed = 50;
                 getRandomWorld();
 
                 break;

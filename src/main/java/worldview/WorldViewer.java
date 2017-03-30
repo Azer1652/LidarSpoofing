@@ -15,12 +15,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.*;
+import java.util.List;
 
 import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT;
 import static com.jogamp.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static com.jogamp.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
+import static java.lang.Math.sin;
 
 /**
  * Created by arthu on 13/03/2017.
@@ -42,7 +45,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         this.addKeyListener(this);
 
         // Create a animator that drives canvas' display() at the specified FPS.
-        final FPSAnimator animator = new FPSAnimator(this, 10, true);
+        final FPSAnimator animator = new FPSAnimator(this, 60, true);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -81,6 +84,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
     @Override
     public void display(GLAutoDrawable drawable) {
         render(drawable);
+        //renderImage(drawable);
         updateWorld();
 
     }
@@ -94,7 +98,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         gl.glDisable(GL_DEPTH_TEST); // Turn Depth Testing Off
 
         // Rotate up and down to look up and down
-        //gl.glRotated(0, 1.0f, 0, 0);
+        gl.glRotated(0, 1.0f, 0, 0);
 
         // Player at headingY. Rotate the scene by -headingY instead (add 360 to get a
         // positive angle)
@@ -103,25 +107,23 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         // Player is at (posX, 0, posZ). Translate the scene to (-posX, 0, -posZ)
         // instead.
         gl.glTranslated(-world.getCarLocation()[0], 0, -world.getCarLocation()[1]);
-/*
-        glu.gluLookAt(world.getCarLocation()[0], 500.0f, world.getCarLocation()[1],
-                world.getCarLocation()[0], 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f);
-*/
-        // Process each segment
 
-        for(Segment s : world.getSegments())
-        {
+        // Process each triangle
+        for(Segment s : world.getSegments()){
             gl.glBegin(GL2.GL_QUADS);
             gl.glNormal3f(0.0f, 0.0f, 1.0f); // Normal pointing out of screen
 
-            gl.glVertex3d(s.vertex.get(0)[0], s.vertex.get(0)[1], s.vertex.get(0)[2]);
+            gl.glVertex3d(s.vertex.get(0)[0],
+                    s.vertex.get(0)[1], s.vertex.get(0)[2]);
 
-            gl.glVertex3d(s.vertex.get(1)[0], s.vertex.get(1)[1], s.vertex.get(1)[2]);
+            gl.glVertex3d(s.vertex.get(1)[0],
+                    s.vertex.get(1)[1], s.vertex.get(1)[2]);
 
-            gl.glVertex3d(s.vertex.get(2)[0], s.vertex.get(2)[1], s.vertex.get(2)[2]);
+            gl.glVertex3d(s.vertex.get(2)[0],
+                    s.vertex.get(2)[1], s.vertex.get(2)[2]);
 
-            gl.glVertex3d(s.vertex.get(3)[0], s.vertex.get(3)[1], s.vertex.get(3)[2]);
+            gl.glVertex3d(s.vertex.get(3)[0],
+                    s.vertex.get(3)[1], s.vertex.get(3)[2]);
         }
         
         /*
@@ -135,8 +137,52 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
         gl.glEnd();
     }
 
+    private void renderImage(GLAutoDrawable drawable)
+    {
+        GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
+        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
+        gl.glLoadIdentity();  // reset the model-view matrix
+
+        gl.glEnable(GL_BLEND); // Turn Blending On
+        gl.glDisable(GL_DEPTH_TEST); // Turn Depth Testing Off
+
+        // Rotate up and down to look up and down
+        gl.glRotated(0, 1.0f, 0, 0);
+
+        // Player at headingY. Rotate the scene by -headingY instead (add 360 to get a
+        // positive angle)
+        gl.glRotated(90+world.getCarHeadingDeg(), 0, 1.0f, 0);
+
+        // Player is at (posX, 0, posZ). Translate the scene to (-posX, 0, -posZ)
+        // instead.
+        gl.glTranslated(-world.getCarLocation()[0], 0, -world.getCarLocation()[1]);
+
+        int[][] pixelData = world.getPixelData();
+
+
+        //Process each pixel
+        List<double[]> pixels = world.getImage().getVertex();
+        Iterator<double[]> pixelsIterator = pixels.listIterator();
+
+        while(pixelsIterator.hasNext())
+        {
+            double[] temp = pixelsIterator.next();
+            gl.glBegin(GL2.GL_LINES);
+            gl.glNormal3f(0.0f, 0.0f, 1.0f); // Normal pointing out of screen
+
+
+            gl.glVertex3d(temp[0],temp[1],temp[2]);
+
+            temp = pixelsIterator.next();
+
+            gl.glVertex3d(temp[0],temp[1],temp[2]);
+        }
+
+        gl.glEnd();
+    }
+
     private void updateWorld(){
-        world.updateWorld();
+
     }
 
     @Override

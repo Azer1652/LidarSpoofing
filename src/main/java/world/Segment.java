@@ -25,8 +25,8 @@ public class Segment {
 
         vertex=new ArrayList<>();
         vertex.add(new Double[]{start[0], 0d, start[1]});
-        vertex.add(new Double[]{start[0], 1000d, start[1]});
-        vertex.add(new Double[]{end[0], 1000d, end[1]});
+        vertex.add(new Double[]{start[0], 10d, start[1]});
+        vertex.add(new Double[]{end[0], 10d, end[1]});
         vertex.add(new Double[]{end[0], 0d, end[1]});
         //normalize();
     }
