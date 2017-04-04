@@ -17,15 +17,14 @@ import static java.lang.Math.*;
  */
 public class SDF
 {
-    DocumentBuilder dBuilder;
-    Document doc;
-    Element model;
+    private Document doc;
+    private Element model;
 
     public SDF(ArrayList<Segment> segments)
     {
         try
         {
-            dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             doc = dBuilder.newDocument();
 
             header();
@@ -45,7 +44,14 @@ public class SDF
         doc.appendChild(sdf);
         addAttribute(sdf,"version","1.6");
 
-        model = addChild(sdf,"model");
+        Element world = addChild(sdf,"world");
+        addAttribute(world,"name","default");
+
+        Element include = addChild(world,"include");
+        Element uri = addChild(include,"uri");
+        addElementText(uri,"model://ground_plane");
+
+        model = addChild(world,"model");
         addAttribute(model,"name","Worldsegments");
 
         Element STATIC = addChild(model,"static");

@@ -48,11 +48,6 @@ public class World {
         this.args = args;
         checkMode();
         new SDF(segments); // Makes sdformat file
-
-		//buildWorld();
-//        getWorldFromImage();
-		//generatePoints();
-
 		updateWorld();
 		encodeData();
 	}
@@ -64,7 +59,6 @@ public class World {
     }
 
     private Hit tracePixel(double angle){
-        //set direction
         double traceAngle =angle + currentCarAngleRad;
 
         traceAngle = traceAngle % (2*Math.PI);

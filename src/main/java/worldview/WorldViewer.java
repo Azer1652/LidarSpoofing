@@ -182,7 +182,7 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
     }
 
     private void updateWorld(){
-
+        world.updateWorld();
     }
 
     @Override
