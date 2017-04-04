@@ -164,20 +164,20 @@ public class RandomGen
     // This helps us keeping a track on where the car physically is in the grid (Here: real x/y coordinates!)
     public void updateCurrentGridLocation()
     {
-        if(location.x > 500+1000*gridLocation.x)
+        if(location.x > 0.5+gridLocation.x)
         {
             gridLocation.x++;
         }
-        else if(location.x < -500+1000*gridLocation.x)
+        else if(location.x < -0.5+gridLocation.x)
         {
             gridLocation.x--;
         }
 
-        if(location.y > 500+1000*gridLocation.y)
+        if(location.y > 0.5+gridLocation.y)
         {
             gridLocation.y++;
         }
-        else if(location.y < -500+1000*gridLocation.y)
+        else if(location.y < -0.5+gridLocation.y)
         {
             gridLocation.y--;
         }

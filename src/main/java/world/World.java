@@ -253,24 +253,24 @@ public class World {
 
 	private void buildWorld()
     {
-        segments.add(new Segment(new double[]{-10000, 10000},new double[]{ -10000, -10000}));
-        segments.add(new Segment(new double[]{-10000, -10000},new double[]{ 10000, -10000}));
-        segments.add(new Segment(new double[]{10000, -10000},new double[]{ 10000, 10000}));
-        segments.add(new Segment(new double[]{10000, 10000},new double[]{ -10000, 10000}));
+        segments.add(new Segment(new double[]{-10, 10},new double[]{ -10, -10}));
+        segments.add(new Segment(new double[]{-10, -10},new double[]{ 10, -10}));
+        segments.add(new Segment(new double[]{10, -10},new double[]{ 10, 10}));
+        segments.add(new Segment(new double[]{10, 10},new double[]{ -10, 10}));
 
-        segments.add(new Segment(new double[]{-6000, 6000},new double[]{ -6000, 2000}));
-        segments.add(new Segment(new double[]{-6000, 2000},new double[]{ -2000, 2000}));
-        segments.add(new Segment(new double[]{-2000, 2000},new double[]{ -2000, 6000}));
-        segments.add(new Segment(new double[]{-2000, 6000},new double[]{ -6000, 6000}));
+        segments.add(new Segment(new double[]{-6, 6},new double[]{ -6, 2}));
+        segments.add(new Segment(new double[]{-6, 2},new double[]{ -2, 2}));
+        segments.add(new Segment(new double[]{-2, 2},new double[]{ -2, 6}));
+        segments.add(new Segment(new double[]{-2, 6},new double[]{ -6, 6}));
 
-        segments.add(new Segment(new double[]{-4000, -3000},new double[]{ -5000, -4000}));
-        segments.add(new Segment(new double[]{-5000, -4000},new double[]{ -4000, -5000}));
-        segments.add(new Segment(new double[]{-4000, -5000},new double[]{ -3000, -4000}));
-        segments.add(new Segment(new double[]{-3000, -4000},new double[]{ -4000, -3000}));
+        segments.add(new Segment(new double[]{-4, -3},new double[]{ -5, -4}));
+        segments.add(new Segment(new double[]{-5, -4},new double[]{ -4, -5}));
+        segments.add(new Segment(new double[]{-4, -5},new double[]{ -3, -4}));
+        segments.add(new Segment(new double[]{-3, -4},new double[]{ -4, -3}));
 
-        segments.add(new Segment(new double[]{6000, 7000},new double[]{ 3000, 0}));
-        segments.add(new Segment(new double[]{3000, 0},new double[]{ 6000, -7000}));
-        segments.add(new Segment(new double[]{6000, -7000},new double[]{ 6000, 7000}));
+        segments.add(new Segment(new double[]{6, 7},new double[]{ 3, 0}));
+        segments.add(new Segment(new double[]{3, 0},new double[]{ 6, -7}));
+        segments.add(new Segment(new double[]{6, -7},new double[]{ 6, 7}));
 	}
 	
 	synchronized public String encodeData(){
@@ -311,22 +311,22 @@ public class World {
         {
             case "image":
                 mode = Mode.IMAGE;
-                carLocation = new double[] {250,300};
-                speed = 1;
+                carLocation = new double[] {0,0};
+                speed = 0.1; // 10 cm per seconde
                 getWorldFromImage();
 
                 break;
             case "random":
                 mode = Mode.RANDOM;
                 carLocation = new double[] {0,0};
-                speed = 50;
+                speed = 0.1;
                 getRandomWorld();
 
                 break;
             default:
                 mode = Mode.DEBUG;
                 carLocation = new double[] {0,0};
-                speed = 50;
+                speed = 0.1;
                 buildWorld();
                 break;
         }

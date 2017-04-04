@@ -70,8 +70,8 @@ public class SDF
         double xm = s.start[0]+xd/2; // X position half between points
         double ym = s.start[1]+yd/2; // Y position half between points
         float length = (float) Math.sqrt(xd*xd+yd*yd); // Pythagoras
-        double width = 0.5; // Wallwidth = free to choose
-        double height = 10; // Wallheight = free to choose
+        double width = 0.1; // Wallwidth = free to choose (10 cm binnenmuur ongeveer)
+        double height = 2.5; // Wallheight = free to choose (250 cm hoogte binnenhuis)
         float angle = (float) atan(yd/xd); // in radialen - TAN: overstaande / aanliggende zijde
 
         Element link = addChild(model,"link");
