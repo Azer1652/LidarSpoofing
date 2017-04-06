@@ -20,7 +20,7 @@ public class SDF
     private Document doc;
     private Element model;
 
-    public SDF(ArrayList<Segment> segments)
+    public SDF(ArrayList<Segment> segments, Mode mode, int randomRange)
     {
         try
         {
@@ -28,8 +28,12 @@ public class SDF
             doc = dBuilder.newDocument();
 
             header();
-            for(int i=0; i<segments.size();i++)
+            int i;
+            for(i=0; i<segments.size();i++)
                 convertSegment(segments.get(i),i);
+
+            if(mode == Mode.RANDOM) // Add border around initialization area
+                randomBorder(randomRange+1,i);
             output();
         }
         catch (ParserConfigurationException | TransformerException e)
@@ -47,9 +51,13 @@ public class SDF
         Element world = addChild(sdf,"world");
         addAttribute(world,"name","default");
 
-        Element include = addChild(world,"include");
-        Element uri = addChild(include,"uri");
-        addElementText(uri,"model://ground_plane");
+        Element include1 = addChild(world,"include");
+        Element uri1 = addChild(include1,"uri");
+        addElementText(uri1,"model://ground_plane");
+
+        Element include2 = addChild(world,"include");
+        Element uri2 = addChild(include2,"uri");
+        addElementText(uri2,"model://sun");
 
         model = addChild(world,"model");
         addAttribute(model,"name","Worldsegments");
@@ -99,6 +107,14 @@ public class SDF
             size = addChild(box,"size");
             addElementText(size,length + " " + width + " " + height); // Length Width Height (distance)
         }
+    }
+
+    private void randomBorder(int range, int i)
+    {
+        convertSegment(new Segment(new double[]{-range, range},new double[]{range, range}),i+1);
+        convertSegment(new Segment(new double[]{-range, -range},new double[]{range, -range}),i+2);
+        convertSegment(new Segment(new double[]{-range, -range},new double[]{-range, range}),i+3);
+        convertSegment(new Segment(new double[]{range, -range},new double[]{range, range}),i+4);
     }
 
     private void output() throws TransformerException

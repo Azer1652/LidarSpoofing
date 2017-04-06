@@ -21,7 +21,6 @@ public class World {
     private Image image;
 
 	public ArrayList<Segment> segments = new ArrayList<>();
-    //List<double[]> uniquePoints = new ArrayList<>();
 	private double data[] = new double[1080];
     private StringBuilder dataString = new StringBuilder();
 
@@ -47,7 +46,7 @@ public class World {
         right = false;
         this.args = args;
         checkMode();
-        new SDF(segments); // Makes sdformat file
+        new SDF(segments,mode,randomGen.range); // Makes sdformat file
 		updateWorld();
 		encodeData();
 	}

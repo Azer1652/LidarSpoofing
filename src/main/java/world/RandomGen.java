@@ -14,7 +14,7 @@ public class RandomGen
     private Point location;
     private Point gridLocation;
     private Point prevGridLocation;
-    private int range = 10; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
+    public int range = 14; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
     private GridPiece[][] grid; // exists of blocks of 1000x1000 mm (Columns in rows)
 
     // Receives the initial segments and location after building the world
@@ -31,17 +31,11 @@ public class RandomGen
     public void initGrid()
     {
         for(int i=0;i<2*range+1;i++)
-        {
             for(int j=0;j<2*range+1;j++)
-            {
                 grid[i][j] = new GridPiece(5,0,new Point(i,j));
-            }
-        }
+
         // [row = y][column = x]                (x,y)
-        //grid[20-9][10] = new GridPiece(4,0,new Point(10,9)); // End
-        (grid[2*range-range][range] = new GridPiece(0,0,new Point(range,range))).makeSegment(); // Straight
-        //grid[20-11][10] = new GridPiece(0,0,new Point(10,11)); // Straight
-        //grid[20-12][10] = new GridPiece(2,0,new Point(10,12)); // TCross
+        (grid[range][range] = new GridPiece(0,0,new Point(range,range))).makeSegment(range+0.5); // Straight
 
         Set<Point> prevPoints = new HashSet<>(); // Using sets to make sure no neighbor duplicates are taken
         Set<Point> currentPoints = new HashSet<>();
@@ -367,7 +361,7 @@ public class RandomGen
                     tries++;
 */
                 isFitting = true;
-                grid[p.x][p.y].makeSegment();
+                grid[p.x][p.y].makeSegment(range+0.5);
             } while(!isFitting);// && tries < 25);
 /*
                 if(tries >= 10) // To improve performance, End shapes are made
