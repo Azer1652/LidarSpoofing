@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class GridPiece
 {
-    /** Predefined segments (always 1000 x 1000 size)
+    /** Predefined segments (always 1 x 1 size)
      *  rotation = 0 = normal; +1 = 90 rotated clockwise each
      *  Name            Shape       type        rotation
      *  Straight        ||          0           0,1
@@ -48,11 +48,11 @@ public class GridPiece
      *  Init (used for initialisation of the grid, same as Cross, but grid needs to be initialised first)
      *  0           x           x           x       x
      *
-     *  Left vertical:      segments.add(new Segment(new double[]{ -10500+1000*x        , -10500+1000*y         },new double[]{ -10500+1000*x        , -10500+1000*y + 1000 }));
-     *  Right vertical:     segments.add(new Segment(new double[]{ -10500+1000*x + 1000 , -10500+1000*y         },new double[]{ -10500+1000*x + 1000 , -10500+1000*y + 1000 }));
+     *  Left vertical:      segments.add(new Segment(new double[]{ -range+x          , -range+y         },new double[]{ -range+x       , -range+y + 1 }));
+     *  Right vertical:     segments.add(new Segment(new double[]{ -range+x + 1      , -range+y         },new double[]{ -range+x + 1   , -range+y + 1 }));
      *
-     *  Top horizontal:     segments.add(new Segment(new double[]{ -10500+1000*x        , -10500+1000*y + 1000  },new double[]{ -10500+1000*x + 1000 , -10500+1000*y + 1000 }));
-     *  Bottom horizontal:  segments.add(new Segment(new double[]{ -10500+1000*x        , -10500+1000*y         },new double[]{ -10500+1000*x + 1000 , -10500+1000*y        }));
+     *  Top horizontal:     segments.add(new Segment(new double[]{ -range+x          , -range+y + 1     },new double[]{ -range+x + 1   , -range+y + 1 }));
+     *  Bottom horizontal:  segments.add(new Segment(new double[]{ -range+x          , -range+y         },new double[]{ -range+x + 1   , -range+y     }));
      *
      */
     private int type; // type of predefined segment, -1 = unpredefined
@@ -150,35 +150,31 @@ public class GridPiece
         return fitParameters;
     }
 
-    public void makeSegment()
+    public void makeSegment(double range)
     {
         if(!isTop)
-            segments.add(new Segment(new double[]{ -10500+1000* point.x       , -10500+1000*point.y + 1000  },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y + 1000 }));
+            segments.add(new Segment(new double[]{ -range+ point.x       , -range+point.y + 1     },new double[]{ -range+point.x + 1   , -range+point.y + 1     }));
 
         if(!isBottom)
-            segments.add(new Segment(new double[]{ -10500+1000*point.x        , -10500+1000*point.y         },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y        }));
+            segments.add(new Segment(new double[]{ -range+point.x        , -range+point.y         },new double[]{ -range+point.x + 1   , -range+point.y         }));
 
         if(!isLeft)
-            segments.add(new Segment(new double[]{ -10500+1000*point.x        , -10500+1000*point.y         },new double[]{ -10500+1000*point.x        , -10500+1000*point.y + 1000 }));
+            segments.add(new Segment(new double[]{ -range+point.x        , -range+point.y         },new double[]{ -range+point.x       , -range+point.y + 1     }));
 
         if(!isRight)
-            segments.add(new Segment(new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y         },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y + 1000 }));
+            segments.add(new Segment(new double[]{ -range+point.x + 1    , -range+point.y         },new double[]{ -range+point.x + 1   , -range+point.y + 1     }));
 
         if(isDiagonal0)
-        {
-            segments.add(new Segment(new double[]{ -10500+1000* point.x       , -10500+1000*point.y         },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y + 1000 }));
-        }
+            segments.add(new Segment(new double[]{ -range+ point.x       , -range+point.y         },new double[]{ -range+point.x + 1   , -range+point.y + 1     }));
 
         if(isDiagonal1)
-        {
-            segments.add(new Segment(new double[]{ -10500+1000* point.x       , -10500+1000*point.y + 1000  },new double[]{ -10500+1000*point.x + 1000 , -10500+1000*point.y        }));
-        }
+            segments.add(new Segment(new double[]{ -range+ point.x       , -range+point.y + 1     },new double[]{ -range+point.x + 1   , -range+point.y         }));
 
         if(isObsTriangle)
         {
-            segments.add(new Segment(new double[]{ -10500+1000* point.x + 400 , -10500+1000*point.y + 400   },new double[]{ -10500+1000*point.x + 600  , -10500+1000*point.y + 400  }));
-            segments.add(new Segment(new double[]{ -10500+1000* point.x + 600 , -10500+1000*point.y + 400   },new double[]{ -10500+1000*point.x + 500  , -10500+1000*point.y + 600  }));
-            segments.add(new Segment(new double[]{ -10500+1000* point.x + 400 , -10500+1000*point.y + 400   },new double[]{ -10500+1000*point.x + 500  , -10500+1000*point.y + 600  }));
+            segments.add(new Segment(new double[]{ -range+ point.x + 0.4 , -range+point.y + 0.4   },new double[]{ -range+point.x + 0.6 , -range+point.y + 0.4   }));
+            segments.add(new Segment(new double[]{ -range+ point.x + 0.6 , -range+point.y + 0.4   },new double[]{ -range+point.x + 0.5 , -range+point.y + 0.6   }));
+            segments.add(new Segment(new double[]{ -range+ point.x + 0.4 , -range+point.y + 0.4   },new double[]{ -range+point.x + 0.5 , -range+point.y + 0.6   }));
         }
 
     }

@@ -17,20 +17,23 @@ import static java.lang.Math.*;
  */
 public class SDF
 {
-    DocumentBuilder dBuilder;
-    Document doc;
-    Element model;
+    private Document doc;
+    private Element model;
 
-    public SDF(ArrayList<Segment> segments)
+    public SDF(ArrayList<Segment> segments, Mode mode, int randomRange)
     {
         try
         {
-            dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             doc = dBuilder.newDocument();
 
             header();
-            for(int i=0; i<segments.size();i++)
+            int i;
+            for(i=0; i<segments.size();i++)
                 convertSegment(segments.get(i),i);
+
+            if(mode == Mode.RANDOM) // Add border around initialization area
+                randomBorder(randomRange+1,i);
             output();
         }
         catch (ParserConfigurationException | TransformerException e)
@@ -45,7 +48,18 @@ public class SDF
         doc.appendChild(sdf);
         addAttribute(sdf,"version","1.6");
 
-        model = addChild(sdf,"model");
+        Element world = addChild(sdf,"world");
+        addAttribute(world,"name","default");
+
+        Element include1 = addChild(world,"include");
+        Element uri1 = addChild(include1,"uri");
+        addElementText(uri1,"model://ground_plane");
+
+        Element include2 = addChild(world,"include");
+        Element uri2 = addChild(include2,"uri");
+        addElementText(uri2,"model://sun");
+
+        model = addChild(world,"model");
         addAttribute(model,"name","Worldsegments");
 
         Element STATIC = addChild(model,"static");
@@ -64,8 +78,8 @@ public class SDF
         double xm = s.start[0]+xd/2; // X position half between points
         double ym = s.start[1]+yd/2; // Y position half between points
         float length = (float) Math.sqrt(xd*xd+yd*yd); // Pythagoras
-        double width = 0.5; // Wallwidth = free to choose
-        double height = 10; // Wallheight = free to choose
+        double width = 0.1; // Wallwidth = free to choose (10 cm binnenmuur ongeveer)
+        double height = 2.5; // Wallheight = free to choose (250 cm hoogte binnenhuis)
         float angle = (float) atan(yd/xd); // in radialen - TAN: overstaande / aanliggende zijde
 
         Element link = addChild(model,"link");
@@ -93,6 +107,14 @@ public class SDF
             size = addChild(box,"size");
             addElementText(size,length + " " + width + " " + height); // Length Width Height (distance)
         }
+    }
+
+    private void randomBorder(int range, int i)
+    {
+        convertSegment(new Segment(new double[]{-range, range},new double[]{range, range}),i+1);
+        convertSegment(new Segment(new double[]{-range, -range},new double[]{range, -range}),i+2);
+        convertSegment(new Segment(new double[]{-range, -range},new double[]{-range, range}),i+3);
+        convertSegment(new Segment(new double[]{range, -range},new double[]{range, range}),i+4);
     }
 
     private void output() throws TransformerException

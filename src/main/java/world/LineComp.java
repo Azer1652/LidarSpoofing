@@ -23,7 +23,7 @@ public class LineComp extends JPanel{
         super.paintComponent(g);
         g.clearRect(0,0,1000,1000);
         for(Segment s:segments1) {
-            g.drawLine((int)s.start[0]/100+400, (int)s.start[1]/100+400, (int)s.end[0]/100+400, (int)s.end[1]/100+400);
+            g.drawLine((int)Math.ceil(s.start[0]*10+400), (int)Math.ceil(s.start[1]*10+400), (int)Math.ceil(s.end[0]*10+400), (int)Math.ceil(s.end[1]*10+400));
         }
     }
 

@@ -41,22 +41,26 @@ public class Image extends JFrame
         this.setResizable(true);
         this.setSize(1000, 1000);
 
-//        String filename = "basic_localization_stage_ground_truth.png";
+//        String filename = "gangmap.png";
+//        String filename = "gangmap.pgm";
 //        String filename = "hector_slam_map_14-00-31.tiff";
-//        String filename = "hector_slam_map_14-18-36.tiff";
-      String filename = "zbuilding.pgm";
+        String filename = "hector_slam_map_14-18-36.tiff";
         String s = filename.substring(filename.lastIndexOf(".") + 1);
         System.out.println(s);
+        int imageScale = 1;
 
         if (Objects.equals(s, "png"))
         {
             openPNG(filename);
+            imageScale = 20; // 1m per 20 pixels
         } else if (Objects.equals(s, "tiff"))
         {
             openTIFF(filename);
+            imageScale = 60; // 1m per 60 pixels
         } else if (Objects.equals(s, "pgm"))
         {
             openPGM(filename);
+            imageScale = 20; // 1m per 20 pixels
         }
 
         System.out.println("image opened");
@@ -66,7 +70,7 @@ public class Image extends JFrame
 
         this.setVisible(true);
 
-        return houghLines();
+        return houghLines(imageScale);
     }
 
     private void openPNG(String filename)
@@ -80,7 +84,8 @@ public class Image extends JFrame
             e1.printStackTrace();
         }
 
-        image = img.getSubimage(1400,1600,900,1000);
+        //image = img.getSubimage(1400,1600,900,1000);
+        image = img;
         binaryImage = image;
 
         pixelData = new int[image.getWidth()][image.getHeight()];
@@ -253,26 +258,24 @@ public class Image extends JFrame
         }
     }
 
-    private ArrayList<Segment> houghLines()
+    private ArrayList<Segment> houghLines(int imageScale)
     {
         CvSeq lines;
         OpenCVFrameConverter.ToIplImage iplConverter = new OpenCVFrameConverter.ToIplImage();
         Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
         CvMemStorage storage = cvCreateMemStorage(0);
-        CanvasFrame edgeC = new CanvasFrame("Edge");
-        CanvasFrame dilC = new CanvasFrame("Dilation");
-        CanvasFrame linesC = new CanvasFrame("Lines");
-        OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
+        CanvasFrame edge = new CanvasFrame("Edge");
+        CanvasFrame hough = new CanvasFrame("Lines");
+        OpenCVFrameConverter.ToIplImage edgeConverter = new OpenCVFrameConverter.ToIplImage();
+        OpenCVFrameConverter.ToIplImage houghConverter = new OpenCVFrameConverter.ToIplImage();
         ArrayList<Segment> segments = new ArrayList<>();
         IplImage src = iplConverter.convert(java2DFrameConverter.convert(binaryImage)); // Convert from binaryImage format
         IplImage dst = cvCreateImage(cvGetSize(src), src.depth(), 3); // Destination image
 
         cvNot(src,src); // Invert image: Black to white, White to black
         cvCanny(src, src, 50, 200, 3); // Canny edge detection
-        //edgeC.showImage(converter.convert(src));
         IplConvKernel element = cvCreateStructuringElementEx(2,2,0,0,CV_SHAPE_RECT); // rectangle, 2x2 size
         cvDilate(src,src,element,1); // Dilate once to thicken the pixels for better houghlines recognition
-        //dilC.showImage(converter.convert(src));
 
         // Using Hough Probabilistic transform: http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlines#houghlines
         // Param. 6: Threshold (20), Param. 7: Minimum Line Length (1, lower has no effect), Param. 8: Max Line Gap (10)
@@ -282,10 +285,11 @@ public class Image extends JFrame
             CvPoint pt1  = new CvPoint(line).position(0);
             CvPoint pt2  = new CvPoint(line).position(1);
             cvLine(dst, pt1, pt2, CV_RGB(255, 0, 0), 1, CV_AA, 0); // draw the segment on the image (for own check)
-            segments.add(new Segment(new double[]{pt1.x(), pt1.y()},new double[]{pt2.x(), pt2.y()})); // Adding segments to list, rescaling if needed
+            segments.add(new Segment(new double[]{(double) pt1.x()/imageScale,(double) pt1.y()/imageScale},new double[]{(double) pt2.x()/imageScale,(double) pt2.y()/imageScale})); // Adding segments to list, rescaling if needed
         }
-
-        //linesC.showImage(converter.convert(dst));
+        //Uncomment to see the edge detection and/or Hough transform result
+        //edge.showImage(edgeConverter.convert(src));
+        hough.showImage(houghConverter.convert(dst));
 
         return segments;
     }
