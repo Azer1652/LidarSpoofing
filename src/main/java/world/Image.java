@@ -41,10 +41,10 @@ public class Image extends JFrame
         this.setResizable(true);
         this.setSize(1000, 1000);
 
-        String filename = "basic_localization_stage_ground_truth.png";
+//        String filename = "basic_localization_stage_ground_truth.png";
 //        String filename = "hector_slam_map_14-00-31.tiff";
 //        String filename = "hector_slam_map_14-18-36.tiff";
-//      String filename = "myMap.pgm";
+      String filename = "zbuilding.pgm";
         String s = filename.substring(filename.lastIndexOf(".") + 1);
         System.out.println(s);
 
@@ -259,18 +259,20 @@ public class Image extends JFrame
         OpenCVFrameConverter.ToIplImage iplConverter = new OpenCVFrameConverter.ToIplImage();
         Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
         CvMemStorage storage = cvCreateMemStorage(0);
-        CanvasFrame edge = new CanvasFrame("Edge");
-        CanvasFrame hough = new CanvasFrame("Lines");
-        OpenCVFrameConverter.ToIplImage edgeConverter = new OpenCVFrameConverter.ToIplImage();
-        OpenCVFrameConverter.ToIplImage houghConverter = new OpenCVFrameConverter.ToIplImage();
+        CanvasFrame edgeC = new CanvasFrame("Edge");
+        CanvasFrame dilC = new CanvasFrame("Dilation");
+        CanvasFrame linesC = new CanvasFrame("Lines");
+        OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
         ArrayList<Segment> segments = new ArrayList<>();
         IplImage src = iplConverter.convert(java2DFrameConverter.convert(binaryImage)); // Convert from binaryImage format
         IplImage dst = cvCreateImage(cvGetSize(src), src.depth(), 3); // Destination image
 
         cvNot(src,src); // Invert image: Black to white, White to black
         cvCanny(src, src, 50, 200, 3); // Canny edge detection
+        //edgeC.showImage(converter.convert(src));
         IplConvKernel element = cvCreateStructuringElementEx(2,2,0,0,CV_SHAPE_RECT); // rectangle, 2x2 size
         cvDilate(src,src,element,1); // Dilate once to thicken the pixels for better houghlines recognition
+        //dilC.showImage(converter.convert(src));
 
         // Using Hough Probabilistic transform: http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=houghlines#houghlines
         // Param. 6: Threshold (20), Param. 7: Minimum Line Length (1, lower has no effect), Param. 8: Max Line Gap (10)
@@ -282,9 +284,8 @@ public class Image extends JFrame
             cvLine(dst, pt1, pt2, CV_RGB(255, 0, 0), 1, CV_AA, 0); // draw the segment on the image (for own check)
             segments.add(new Segment(new double[]{pt1.x(), pt1.y()},new double[]{pt2.x(), pt2.y()})); // Adding segments to list, rescaling if needed
         }
-        //Uncomment to see the edge detection and/or Hough transform result
-        //edge.showImage(edgeConverter.convert(src));
-        hough.showImage(houghConverter.convert(dst));
+
+        //linesC.showImage(converter.convert(dst));
 
         return segments;
     }
