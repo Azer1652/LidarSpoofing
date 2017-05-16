@@ -228,8 +228,8 @@ public class Image extends JFrame
             binaryImage = new BufferedImage(4000, 4000, BufferedImage.TYPE_INT_ARGB);
 
             // read the image data
-            for (int j = 0; j < picHeight; j++)
-                for (int i = 0; i < picWidth; i++)
+            for (int j = picHeight-1; j >= 0; j--)
+                for (int i = 0; i < picHeight; i++)
                 {
                     data2D[i][j] = dis.readUnsignedByte();
                     if (data2D[i][j] > 205)

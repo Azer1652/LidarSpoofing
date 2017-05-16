@@ -31,7 +31,7 @@ public class SDF
             header();
             int i;
             for(i=0; i<segments.size();i++)
-                convertSegment(segments.get(i),i);
+                convertSegment(segments.get(i),i,0);
             randomBorder(randomRange+1,i);
             output();
         }
@@ -41,7 +41,7 @@ public class SDF
         }
     }
 
-    public SDF(ArrayList<Segment> segments)
+    public SDF(ArrayList<Segment> segments, double origin)
     {
         try
         {
@@ -51,7 +51,7 @@ public class SDF
             header();
             int i;
             for(i=0; i<segments.size();i++)
-                convertSegment(segments.get(i),i);
+                convertSegment(segments.get(i),i,origin);
             output();
         }
         catch (ParserConfigurationException | TransformerException e)
@@ -89,7 +89,7 @@ public class SDF
     }
 
     // casting to floats to limit the amount digits
-    private void convertSegment(Segment s, int i)
+    private void convertSegment(Segment s, int i, double origin)
     {
         double xd = s.direction[0]; // Difference of points on X-axis
         double yd = s.direction[1]; // Difference of points on Y-axis
@@ -105,7 +105,7 @@ public class SDF
 
         Element pose = addChild(link,"pose");
         addAttribute(pose,"frame","");
-        addElementText(pose,xm + " " + ym + " " + height/2 + " 0 0 " + angle); // X Y Z Roll(X) Pitch(Y) Yaw(Z) (center of the box)
+        addElementText(pose,xm+origin + " " + ym+origin + " " + height/2 + " 0 0 " + angle); // X Y Z Roll(X) Pitch(Y) Yaw(Z) (center of the box)
 
         Element collision = addChild(link,"collision");
         addAttribute(collision,"name","Wall_" + i + "_Collision");
@@ -129,10 +129,10 @@ public class SDF
 
     private void randomBorder(int range, int i)
     {
-        convertSegment(new Segment(new double[]{-range, range},new double[]{range, range}),i+1);
-        convertSegment(new Segment(new double[]{-range, -range},new double[]{range, -range}),i+2);
-        convertSegment(new Segment(new double[]{-range, -range},new double[]{-range, range}),i+3);
-        convertSegment(new Segment(new double[]{range, -range},new double[]{range, range}),i+4);
+        convertSegment(new Segment(new double[]{-range, range},new double[]{range, range}),i+1,0);
+        convertSegment(new Segment(new double[]{-range, -range},new double[]{range, -range}),i+2,0);
+        convertSegment(new Segment(new double[]{-range, -range},new double[]{-range, range}),i+3,0);
+        convertSegment(new Segment(new double[]{range, -range},new double[]{range, range}),i+4,0);
     }
 
     private void output() throws TransformerException

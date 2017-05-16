@@ -49,7 +49,7 @@ public class World {
         if(mode == Mode.RANDOM)
             new SDF(segments,randomGen.range); // Makes sdformat file
         else
-            new SDF(segments); // Makes sdformat file
+            new SDF(segments,-51.224998); // Makes sdformat file
 		updateWorld();
 		encodeData();
 	}
