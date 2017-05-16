@@ -77,15 +77,21 @@ public class SDF
         Element uri2 = addChild(include2,"uri");
         addElementText(uri2,"model://sun");
 
+        Element include3 = addChild(world,"include");
+        Element uri3 = addChild(include3,"uri");
+        addElementText(uri3,"/home/ros/catkin_ws/src/F1_Gazebo/worlds/");
+        Element pose1 = addChild(include3,"pose");
+        addElementText(pose1,"0 0 0 0 0 3.14");
+
         model = addChild(world,"model");
         addAttribute(model,"name","Worldsegments");
 
         Element STATIC = addChild(model,"static");
         addElementText(STATIC,"1");
 
-        Element pose = addChild(model,"pose");
-        addAttribute(pose,"frame","");
-        addElementText(pose,"0 0 0 0 0 0"); // Center, no rotation
+        Element pose2 = addChild(model,"pose");
+        addAttribute(pose2,"frame","");
+        addElementText(pose2,"0 0 0 0 0 0"); // Center, no rotation
     }
 
     // casting to floats to limit the amount digits
@@ -105,7 +111,7 @@ public class SDF
 
         Element pose = addChild(link,"pose");
         addAttribute(pose,"frame","");
-        addElementText(pose,xm+origin + " " + ym+origin + " " + height/2 + " 0 0 " + angle); // X Y Z Roll(X) Pitch(Y) Yaw(Z) (center of the box)
+        addElementText(pose,(xm+origin) + " " + (ym+origin) + " " + height/2 + " 0 0 " + angle); // X Y Z Roll(X) Pitch(Y) Yaw(Z) (center of the box)
 
         Element collision = addChild(link,"collision");
         addAttribute(collision,"name","Wall_" + i + "_Collision");
