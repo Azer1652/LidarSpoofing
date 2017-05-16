@@ -44,7 +44,8 @@ public class Image extends JFrame
 //        String filename = "gangmap.png";
 //        String filename = "gangmap.pgm";
 //        String filename = "hector_slam_map_14-00-31.tiff";
-        String filename = "hector_slam_map_14-18-36.tiff";
+//        String filename = "hector_slam_map_14-18-36.tiff";
+        String filename = "zbuilding.pgm";
         String s = filename.substring(filename.lastIndexOf(".") + 1);
         System.out.println(s);
         int imageScale = 1;
