@@ -42,7 +42,7 @@ public class Image extends JFrame
         this.setSize(1000, 1000);
 
 //        String filename = "gangmap.png";
-//        String filename = "gangmap.pgm";
+//       String filename = "gangmap.pgm";
 //        String filename = "hector_slam_map_14-00-31.tiff";
 //        String filename = "hector_slam_map_14-18-36.tiff";
         String filename = "zbuilding.pgm";

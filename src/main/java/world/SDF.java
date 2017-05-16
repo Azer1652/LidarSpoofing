@@ -20,7 +20,8 @@ public class SDF
     private Document doc;
     private Element model;
 
-    public SDF(ArrayList<Segment> segments, Mode mode, int randomRange)
+    // When LidarSpoof is in Random mode
+    public SDF(ArrayList<Segment> segments, int randomRange)
     {
         try
         {
@@ -31,9 +32,26 @@ public class SDF
             int i;
             for(i=0; i<segments.size();i++)
                 convertSegment(segments.get(i),i);
+            randomBorder(randomRange+1,i);
+            output();
+        }
+        catch (ParserConfigurationException | TransformerException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-            if(mode == Mode.RANDOM) // Add border around initialization area
-                randomBorder(randomRange+1,i);
+    public SDF(ArrayList<Segment> segments)
+    {
+        try
+        {
+            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            doc = dBuilder.newDocument();
+
+            header();
+            int i;
+            for(i=0; i<segments.size();i++)
+                convertSegment(segments.get(i),i);
             output();
         }
         catch (ParserConfigurationException | TransformerException e)

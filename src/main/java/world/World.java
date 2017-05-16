@@ -46,7 +46,10 @@ public class World {
         right = false;
         this.args = args;
         checkMode();
-        new SDF(segments,mode,randomGen.range); // Makes sdformat file
+        if(mode == Mode.RANDOM)
+            new SDF(segments,randomGen.range); // Makes sdformat file
+        else
+            new SDF(segments); // Makes sdformat file
 		updateWorld();
 		encodeData();
 	}
