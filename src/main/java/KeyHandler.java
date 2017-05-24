@@ -11,6 +11,10 @@ public class KeyHandler implements KeyListener {
 
     World world = null;
 
+    /**
+     * Keyhandler that updates the given world
+     * @param world
+     */
     public KeyHandler(World world){
         this.world=world;
 

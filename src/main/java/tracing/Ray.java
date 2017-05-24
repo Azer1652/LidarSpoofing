@@ -8,11 +8,18 @@ public class Ray {
 	private double location[];
 	private double angle;
 
+	/**
+	 * New Ray
+	 */
 	public Ray(){
 		this.location = new double[]{0,0};
 		this.direction = new double[]{0,0};
 	}
 
+	/**
+	 * new Ray
+	 * @param angle
+	 */
 	public Ray(double angle){
 		this.angle=angle;
 		this.location = new double[]{0,0};
@@ -21,11 +28,21 @@ public class Ray {
 		this.direction[1] = Math.sin(angle);
 	}
 
+	/**
+	 * New Ray
+	 * @param location
+	 * @param angle
+	 */
 	public Ray(double[] location, double angle){
 		this.location = location;
 		this.angle = angle;
 	}
 
+	/**
+	 * new Ray
+	 * @param location
+	 * @param direction
+	 */
 	public Ray(double[] location, double[] direction){
 		this.location = location;
 		this.direction = direction;
@@ -51,6 +68,11 @@ public class Ray {
 		this.direction[1] = y;
 	}
 
+	/**
+	 * Perform Pixel Tracing with this ray on pixelData
+	 * @param pixelData
+	 * @return
+	 */
 	public Hit hitPixel(int[][] pixelData) {
 		double i, j;
 		double dx = Math.cos(angle);
@@ -119,6 +141,11 @@ public class Ray {
 		return new Hit(null, 100);
 	}
 
+	/**
+	 * Perform normal raytracing between two lines
+	 * @param segment
+	 * @return
+	 */
 	public Hit hit(Segment segment){
 		if(this.direction == segment.direction)
 			return new Hit(null, 30000);

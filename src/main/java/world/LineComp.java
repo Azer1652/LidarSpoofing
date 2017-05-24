@@ -12,6 +12,10 @@ public class LineComp extends JPanel{
     private CopyOnWriteArrayList<Segment> segments1;
     private List<Segment> segments2;
 
+    /**
+     * Create a new panel displaying the segments
+     * @param segments
+     */
     public LineComp(List<Segment> segments){
         segments1 = new CopyOnWriteArrayList<>();
         segments2 = segments;

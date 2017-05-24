@@ -11,8 +11,7 @@ import java.util.List;
 
 public class World {
 
-    //This value is supposed to be divided by -pi/4, but it generates an offset if you don't substract 0.1
-    private final static double angleStartRad = +Math.toRadians(135); //-0.28;
+    private final static double angleStartRad = +Math.toRadians(135);
     //private final static double angleEndRad = Math.PI-angleStartRad;
     private final static double angleDiffRad = Math.toRadians(270)/(1080);
     private final String args;
@@ -39,6 +38,10 @@ public class World {
     private Mode mode;
 
 
+    /**
+     * New world
+     * @param args image, random, or blank (default)
+     */
 	public World(String args){
 	    up = false;
         down = false;
@@ -53,13 +56,22 @@ public class World {
 		updateWorld();
 		encodeData();
 	}
-	
+
+    /**
+     * Generate data string from world
+     * @return
+     */
 	public String getDataString(){
 	    updateWorld();
 	    encodeData();
 	    return dataString.toString();
     }
 
+    /**
+     * Perform raytracing using pixels using angle
+     * @param angle
+     * @return
+     */
     private Hit tracePixel(double angle){
         double traceAngle =angle + currentCarAngleRad;
 
@@ -74,6 +86,11 @@ public class World {
         return hit;
     }
 
+    /**
+     * Perform norma raytracing for angle
+     * @param angle
+     * @return
+     */
     private Hit trace(double angle){
         //todo remove cos and sin by something simpler
         double dx = Math.cos(angle+currentCarAngleRad);
@@ -118,6 +135,9 @@ public class World {
         return new int[] {image.getWidth(),image.getHeight()};
     }
 
+    /**
+     * Update objects in the world
+     */
 	synchronized public void updateWorld(){
         double current = angleStartRad;
 
@@ -241,18 +261,27 @@ public class World {
         }
     }
 
+    /**
+     * Generate 3D segments from image
+     */
     private void getWorldFromImage(){
         image = new Image();
         segments = image.openImage();
         image.getMouse();
     }
 
+    /**
+     * Generate 3D map randomly
+     */
     private void getRandomWorld(){
         randomGen = new RandomGen(new Point((int) carLocation[0],(int) carLocation[1]));
         updateSegments(); // Replaces all segments with latest ones
         showWorld();
     }
 
+    /**
+     * Generate test world
+     */
 	private void buildWorld()
     {
         segments.add(new Segment(new double[]{-10, 10},new double[]{ -10, -10}));
@@ -274,7 +303,11 @@ public class World {
         segments.add(new Segment(new double[]{3, 0},new double[]{ 6, -7}));
         segments.add(new Segment(new double[]{6, -7},new double[]{ 6, 7}));
 	}
-	
+
+    /**
+     * Encode data as done by the Hokuyo
+     * @return
+     */
 	synchronized public String encodeData(){
 	    dataString = new StringBuilder();
 		for(int j=0; j<1080; j++){
@@ -290,6 +323,9 @@ public class World {
         return dataString.toString();
 	}
 
+    /**
+     * Update Segments
+     */
     public void updateSegments()
     {
         GridPiece[][] grid = randomGen.checkWorld(new Point((int) carLocation[0],(int) carLocation[1]));
@@ -307,6 +343,9 @@ public class World {
         }
     }
 
+    /**
+     * Checks args and init mode
+     */
     private void checkMode()
     {
         switch (args)
@@ -334,6 +373,9 @@ public class World {
         }
     }
 
+    /**
+     * Display world 2D
+     */
     private void showWorld()
     {
         lineComp = new LineComp(segments);

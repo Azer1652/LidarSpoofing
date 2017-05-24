@@ -35,6 +35,12 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
     private GLU glu;
     JFrame frame = new JFrame();
 
+    /**
+     * New OpenGL canvas
+     * @param world
+     * @param width
+     * @param height
+     */
     public WorldViewer(World world, int width, int height){
         this.world = world;
 
@@ -65,6 +71,9 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
     }
 
     @Override
+    /**
+     * Init openGL
+     */
     public void init(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
         glu = new GLU();                         // get GL Utilities
@@ -82,6 +91,9 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
     }
 
     @Override
+    /**
+     * Called every frame
+     */
     public void display(GLAutoDrawable drawable) {
         render(drawable);
         //renderImage(drawable);
@@ -89,6 +101,10 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
 
     }
 
+    /**
+     * Render world as segments
+     * @param drawable
+     */
     private void render(GLAutoDrawable drawable){
         GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
@@ -138,6 +154,9 @@ public class WorldViewer extends GLCanvas implements GLEventListener, KeyListene
     }
 
     @Override
+    /**
+     * Called on window resize
+     */
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
 

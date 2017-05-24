@@ -23,7 +23,12 @@ public class LidarSpoof {
 	static public boolean debug_commands = false;
 	static public boolean debug_dataSender = false;
 
-	
+	/**
+	 * Start a socket for the Lidar and update/send the world to the connected users
+	 * @param world
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public LidarSpoof(World world) throws IOException, InterruptedException{
 		this.world = world;
 	    sender = new DataSender(connection, world);
@@ -55,7 +60,13 @@ public class LidarSpoof {
             outToClient.writeBytes(capitalizedSentence);*/
 		}
 	}
-	
+
+	/**
+	 * Handles a command intended for the LiDAR as if it was a real LiDAR.
+	 * @param command
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static void handleCommand(String command) throws IOException, InterruptedException{
 		StringBuilder builder = null;
 		String model;
@@ -167,7 +178,12 @@ public class LidarSpoof {
 		
 			
 	}
-	
+
+	/**
+	 * Apppends a correct terminator as used by the LiDAR to a Stringbuilder
+	 * @param builder
+	 * @param model
+	 */
 	public static void appendTerminator(StringBuilder builder, String model){
 		builder.append(model);
 		builder.append(';');
@@ -184,16 +200,22 @@ public class LidarSpoof {
         expected_sum = (expected_sum & 0x3f) + 0x30;
         return expected_sum;
     }
-	
+
+	/**
+	 * Start the Lidarspoof
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		World world = new World(args[0]);
 		new Thread(() -> {
 			try {
+				//Start new Lidar
 				LidarSpoof lidarSpoof = new LidarSpoof(world);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
 		}).start();
+		//Create  a thread for the OpenGL canvas
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

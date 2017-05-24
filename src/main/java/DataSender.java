@@ -23,17 +23,35 @@ public class DataSender implements Runnable{
 
 	public World world;
 
+	/**
+	 * Create a Data sender for a world and a connection
+	 * @param conn
+	 * @param world
+	 */
     public DataSender(Socket conn, World world){
         this.connection = conn;
         this.world = world;
     }
-	
+
+	/**
+	 * Create a Data sender for a world and a connection
+	 * @param conn
+	 * @param world
+	 * @param type
+	 */
 	public DataSender(Socket conn, World world, TYPE type){
 		this.connection = conn;
 		this.world = world;
 		this.type = type;
 	}
 
+	/**
+	 * Stops a Data sender
+	 * @param out
+	 * @param s
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public void exit(DataOutputStream out, String s) throws IOException, InterruptedException {
 		finishFrame = true;
 		System.out.println("Stopping data sending");
@@ -43,7 +61,12 @@ public class DataSender implements Runnable{
 		out.write(s.getBytes());
 		
 	}
-	
+
+	/**
+	 * Calculate the appropriate checksum for a string
+	 * @param st
+	 * @return
+	 */
 	private int calculateChecksum(String st) {
         String data = st.substring(0, st.length());
         int expected_sum = 0x00;
@@ -53,12 +76,22 @@ public class DataSender implements Runnable{
         expected_sum = (expected_sum & 0x3f) + 0x30;
         return (char) expected_sum;
     }
-	
+
+	/**
+	 * Get data from the world in String form
+	 * @return
+	 */
 	private String createData(){
 		//World world = new World();
 		return world.getDataString();
 	}
-	
+
+	/**
+	 * Split the input string into equally sized strings
+	 * @param text
+	 * @param size
+	 * @return
+	 */
 	private List<String> splitEquallysplitEqually(String text, int size) {
 		// Give the list the right capacity to start with. You could use an array
 	    // instead if you wanted.
@@ -69,7 +102,12 @@ public class DataSender implements Runnable{
 	    }
 	    return ret;
 	}
-	
+
+	/**
+	 * Process the String to have a string as emulated by LiDAR
+	 * @param s
+	 * @return
+	 */
 	public String parseDataString(String s){
 		StringBuilder finalString = new StringBuilder();
 
@@ -83,6 +121,10 @@ public class DataSender implements Runnable{
 		return finalString.toString();
 	}
 
+	/**
+	 * Encode Time
+	 * @return
+	 */
 	public String encodeTime() {
 		StringBuilder data= new StringBuilder();
 		int value = this.time;
@@ -96,6 +138,9 @@ public class DataSender implements Runnable{
 	}
 
 	@Override
+	/**
+	 * Run the DataSender thread
+	 */
 	synchronized public void run() {
 		//standard full frame header
         if(LidarSpoof.debug_dataSender)

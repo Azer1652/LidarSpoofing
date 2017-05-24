@@ -31,7 +31,7 @@ public class Image extends JFrame
 
     public List<double[]> vertex = new ArrayList<>();
 
-    public void Image() {}
+    public Image() {}
 
 
 
