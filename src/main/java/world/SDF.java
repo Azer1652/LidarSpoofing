@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import static java.lang.Math.*;
 
 /**
+ * This class coverts a 3D world of walls to an SDF file that is readable by Gazebo
  * SDF created by Jan De Laet on 23/03/2017.
  */
 public class SDF
@@ -71,6 +72,9 @@ public class SDF
         }
     }
 
+    /**
+     * Add static header for SDF format
+     */
     private void header()
     {
         Element sdf = doc.createElement("sdf");
@@ -105,7 +109,9 @@ public class SDF
         addElementText(pose2,"0 0 0 0 0 0"); // Center, no rotation
     }
 
-    // casting to floats to limit the amount digits
+    /**
+     * casting to floats to limit the amount digits
+     */
     private void convertSegment(Segment s, int i, double origin)
     {
         double xd = s.direction[0]; // Difference of points on X-axis
@@ -157,6 +163,10 @@ public class SDF
         convertSegment(new Segment(new double[]{range, -range},new double[]{range, range}),i+4,0);
     }
 
+    /**
+     * Write SDF format to a file called worldmap.world
+     * @throws TransformerException
+     */
     private void output() throws TransformerException
     {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -168,7 +178,7 @@ public class SDF
     }
 
     /**
-     *
+     * In xml format: add child of an element
      * @param element
      * @param name
      * @return
@@ -181,7 +191,7 @@ public class SDF
     }
 
     /**
-     *
+     * In xml format: add attribute (name-value pair)
      * @param element
      * @param name
      * @param value
@@ -194,7 +204,7 @@ public class SDF
     }
 
     /**
-     *
+     * In xml format: add element tag
      * @param element
      * @param text
      */

@@ -31,6 +31,10 @@ public class RandomGen
         initGrid(); // initialisation of the grid
     }
 
+    /**
+     * This method is used by SDF for generating a random world.
+     * Opencv will also use this and update the world in the other methods.
+     */
     public void initGrid()
     {
         for(int i=0;i<2*range+1;i++)
