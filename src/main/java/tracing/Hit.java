@@ -25,6 +25,11 @@ public class Hit {
 
     private double time;
 
+    /**
+     *
+     * @param position
+     * @param time
+     */
     public Hit(double[] position, double time){
         this.position = position;
         this.time = time;

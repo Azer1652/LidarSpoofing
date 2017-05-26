@@ -33,8 +33,10 @@ public class Image extends JFrame
 
     public Image() {}
 
-
-
+    /**
+     *
+     * @return arraylist of Segments
+     */
     public ArrayList<Segment> openImage()
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,6 +76,10 @@ public class Image extends JFrame
         return houghLines(imageScale);
     }
 
+    /**
+     *
+     * @param filename
+     */
     private void openPNG(String filename)
     {
         try
@@ -118,6 +124,10 @@ public class Image extends JFrame
         }
     }
 
+    /**
+     *
+     * @param filename
+     */
     private void openTIFF(String filename)
     {
         try
@@ -188,6 +198,10 @@ public class Image extends JFrame
         binaryImage = convertedImage;
 }
 
+    /**
+     *
+     * @param filename
+     */
     private void openPGM(String filename)
     {
         try
@@ -259,6 +273,11 @@ public class Image extends JFrame
         }
     }
 
+    /**
+     *
+     * @param imageScale
+     * @return
+     */
     private ArrayList<Segment> houghLines(int imageScale)
     {
         CvSeq lines;
@@ -304,6 +323,13 @@ public class Image extends JFrame
         g.drawImage(binaryImage, 0, 0, 1000, 1000, null);
     }
 
+    /**
+     *
+     * @param img
+     * @param x
+     * @param y
+     * @return
+     */
     public int[] getPixelData(BufferedImage img, int x, int y)
     {
         int argb = img.getRGB(x, y);
@@ -333,6 +359,11 @@ public class Image extends JFrame
         });
     }
 
+    /**
+     *
+     * @param X
+     * @param Y
+     */
     private void setLocationFromMouse(double tempX, double tempY)
     {
         mouseClicked = true;

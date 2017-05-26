@@ -137,10 +137,10 @@ public class DataSender implements Runnable{
 		return data.toString();
 	}
 
-	@Override
 	/**
 	 * Run the DataSender thread
 	 */
+	@Override
 	synchronized public void run() {
 		//standard full frame header
         if(LidarSpoof.debug_dataSender)

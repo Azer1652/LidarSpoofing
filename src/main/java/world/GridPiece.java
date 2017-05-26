@@ -63,7 +63,12 @@ public class GridPiece
     private Point point; // what gridplace will the gridPiece get
 
 
-    // Gridpiece constructor for predefined segments
+    /** Gridpiece constructor for predefined segments
+     *
+     * @param type
+     * @param rotation
+     * @param p
+     */
     public GridPiece(int type, int rotation, Point p)
     {
         segments = new ArrayList<>();
@@ -77,6 +82,12 @@ public class GridPiece
         this.isRight = fitParameters[3];
     }
 
+    /**
+     *
+     * @param type
+     * @param rotation
+     * @return
+     */
     public boolean[] getGridPieceFitBool(int type, int rotation)
     {
         boolean isTop = false, isBottom = false, isLeft = false, isRight = false; // if true, corresponding side is open = can fit
@@ -150,6 +161,10 @@ public class GridPiece
         return fitParameters;
     }
 
+    /**
+     *
+     * @param range
+     */
     public void makeSegment(double range)
     {
         if(!isTop)

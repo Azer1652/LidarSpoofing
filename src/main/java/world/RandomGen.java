@@ -17,7 +17,10 @@ public class RandomGen
     public int range = 14; // Range of the grid, 10 = 10 segments each direction + middle segment -> 441 segments
     private GridPiece[][] grid; // exists of blocks of 1000x1000 mm (Columns in rows)
 
-    // Receives the initial segments and location after building the world
+    /** Receives the initial segments and location after building the world
+     *
+     * @param location
+     */
     public RandomGen(Point location)
     {
         gridLocation = new Point(0,0);
@@ -69,7 +72,9 @@ public class RandomGen
         }
     }
 
-    // Every time method updateWorld in class World executes, it will give the latest location
+    /**
+     * Every time method updateWorld in class World executes, it will give the latest location
+      */
     public GridPiece[][] checkWorld(Point location)
     {
         this.location = location;
@@ -80,7 +85,9 @@ public class RandomGen
         return grid;
     }
 
-    // updates the random grid
+    /** updates the random grid
+     *
+     */
     public void updateGrid()
     {
         Set<Point> points = new HashSet<>();
@@ -155,7 +162,9 @@ public class RandomGen
         //System.out.println("PrevGridLocation x: " + prevGridLocation.x + " y: " + prevGridLocation.y);
     }
 
-    // This helps us keeping a track on where the car physically is in the grid (Here: real x/y coordinates!)
+    /** This helps us keeping a track on where the car physically is in the grid (Here: real x/y coordinates!)
+     *
+     */
     public void updateCurrentGridLocation()
     {
         if(location.x > 0.5+gridLocation.x)
@@ -179,7 +188,10 @@ public class RandomGen
         //System.out.println("Gridlocation x: " + gridLocation.x + " y: " + gridLocation.y);
     }
 
-    // Algorithm used in initialisation and update of the mapgrid
+    /** Algorithm used in initialisation and update of the mapgrid
+     *
+     * @param points
+     */
     public void generateRandomGridPieces(Set<Point> points)
     {
         int chanceStraight = 5, chanceCorner = 5, chanceTCross = 5, chanceCross = 50, chanceEnd = 5,

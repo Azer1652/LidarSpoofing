@@ -16,6 +16,11 @@ public class Segment {
 
     public List<Double[]> vertex;
 
+    /**
+     *
+     * @param start
+     * @param end
+     */
     public Segment(double[] start, double[] end){
         this.start = start;
         this.end = end;

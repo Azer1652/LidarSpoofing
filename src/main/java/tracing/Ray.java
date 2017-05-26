@@ -48,21 +48,39 @@ public class Ray {
 		this.direction = direction;
 	}
 
+	/**
+	 *
+	 * @param location x then y
+	 */
 	public void setLocation(double[] location){
 	    this.location[0] = location[0];
         this.location[1] = location[1];
     }
 
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 */
     public void setLocation(double x, double y){
         this.location[0] = x;
         this.location[1] = y;
     }
 
+	/**
+	 *
+	 * @param direction x then y
+	 */
 	public void setDirection(double[] direction){
 		this.direction[0] = direction[0];
 		this.direction[1] = direction[1];
 	}
 
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 */
 	public void setDirection(double x, double y){
 		this.direction[0] = x;
 		this.direction[1] = y;

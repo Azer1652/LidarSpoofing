@@ -21,6 +21,12 @@ public class SDF
     private Element model;
 
     // When LidarSpoof is in Random mode
+
+    /**
+     *
+     * @param segments
+     * @param randomRange
+     */
     public SDF(ArrayList<Segment> segments, int randomRange)
     {
         try
@@ -41,6 +47,11 @@ public class SDF
         }
     }
 
+    /**
+     *
+     * @param segments
+     * @param origin
+     */
     public SDF(ArrayList<Segment> segments, double origin)
     {
         try
@@ -133,6 +144,11 @@ public class SDF
         }
     }
 
+    /**
+     *
+     * @param range
+     * @param i
+     */
     private void randomBorder(int range, int i)
     {
         convertSegment(new Segment(new double[]{-range, range},new double[]{range, range}),i+1,0);
@@ -151,6 +167,12 @@ public class SDF
         transformer.transform(source, new StreamResult(System.out)); // Output to console for testing
     }
 
+    /**
+     *
+     * @param element
+     * @param name
+     * @return
+     */
     private Element addChild(Element element, String name)
     {
         Element child = doc.createElement(name);
@@ -158,6 +180,12 @@ public class SDF
         return child;
     }
 
+    /**
+     *
+     * @param element
+     * @param name
+     * @param value
+     */
     private void addAttribute(Element element, String name, String value)
     {
         Attr attribute = doc.createAttribute(name);
@@ -165,6 +193,11 @@ public class SDF
         element.setAttributeNode(attribute);
     }
 
+    /**
+     *
+     * @param element
+     * @param text
+     */
     private void addElementText(Element element, String text)
     {
         element.appendChild(doc.createTextNode(text));

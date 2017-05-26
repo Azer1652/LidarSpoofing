@@ -22,6 +22,10 @@ public class LineComp extends JPanel{
         segments1.addAll(segments2);
     }
 
+    /**
+     *
+     * @param g
+     */
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -31,6 +35,10 @@ public class LineComp extends JPanel{
         }
     }
 
+    /**
+     *
+     * @param segments
+     */
     public void update(List<Segment> segments)
     {
         segments1 = new CopyOnWriteArrayList<>();

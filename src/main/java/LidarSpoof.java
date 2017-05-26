@@ -191,6 +191,11 @@ public class LidarSpoof {
 		builder.append("\n");
 	}
 
+	/**
+	 *
+	 * @param st data string
+	 * @return
+	 */
 	private static int calculateChecksum(String st) {
         String data = st.substring(0, st.length());
         int expected_sum = 0x00;
