@@ -31,11 +31,12 @@ public class Image extends JFrame
 
     public List<double[]> vertex = new ArrayList<>();
 
+
     public Image() {}
 
     /**
-     *
-     * @return arraylist of Segments
+     * This method opens an image in the default directory. Given the arguments (png, tiff or pgm)
+     * @return an ArrayList of walls (segments)
      */
     public ArrayList<Segment> openImage()
     {
@@ -77,7 +78,7 @@ public class Image extends JFrame
     }
 
     /**
-     *
+     * This method opens a PNG and looks for white pixels -> white and gray/black pixels -> black. This generates a binaryImage with black or white pixels (perform thresholding)
      * @param filename
      */
     private void openPNG(String filename)
@@ -125,7 +126,7 @@ public class Image extends JFrame
     }
 
     /**
-     *
+     * This method opens a TIFF and looks for white pixels -> white and gray/black pixels -> black. This generates a binaryImage with black or white pixels (perform thresholding)
      * @param filename
      */
     private void openTIFF(String filename)
@@ -196,10 +197,10 @@ public class Image extends JFrame
         BufferedImage convertedImage = new BufferedImage(binaryImage.getWidth(),binaryImage.getHeight(),10); // PNG TYPE 10!
         convertedImage.getGraphics().drawImage(binaryImage,0,0,null);
         binaryImage = convertedImage;
-}
+    }
 
     /**
-     *
+     * This method opens a PGM and looks for white pixels -> white and gray/black pixels -> black. This generates a binaryImage with black or white pixels (perform thresholding)
      * @param filename
      */
     private void openPGM(String filename)
@@ -274,9 +275,9 @@ public class Image extends JFrame
     }
 
     /**
-     *
-     * @param imageScale
-     * @return
+     * This method creates walls with houghtransform
+     * @param imageScale = scaling for amount of pixels per meter
+     * @return ArrayList of walls (segments)
      */
     private ArrayList<Segment> houghLines(int imageScale)
     {
@@ -316,6 +317,10 @@ public class Image extends JFrame
         return segments;
     }
 
+    /**
+     * paint the binaryImage to see if thresholding worked
+     * @param g
+     */
     @Override
     public void paint(Graphics g)
     {
@@ -324,7 +329,7 @@ public class Image extends JFrame
     }
 
     /**
-     *
+     * Get an array of rgb values for a given pixel in an image
      * @param img
      * @param x
      * @param y
@@ -344,6 +349,9 @@ public class Image extends JFrame
         return rgb;
     }
 
+    /**
+     * You can click on the painted image for testing purposes with Urgbenri
+     */
     public void getMouse()
     {
         this.addMouseListener(new MouseAdapter()
@@ -360,9 +368,9 @@ public class Image extends JFrame
     }
 
     /**
-     *
-     * @param X
-     * @param Y
+     * Update the location of the mouse
+     * @param tempX
+     * @param tempY
      */
     private void setLocationFromMouse(double tempX, double tempY)
     {
@@ -374,12 +382,20 @@ public class Image extends JFrame
         System.out.println("x: "+x+" y: "+y+" oldX: "+oldX+" oldY: "+oldY);
     }
 
+    /**
+     * Update the location of the mouse
+     * @return
+     */
     public double[] getLocationFromMouse()
     {
 
         return new double[]{x,y};
     }
 
+    /**
+     * Check for a mouse click
+     * @return
+     */
     public boolean checkMouseClicked()
     {
         if(mouseClicked || oldX != x && oldY != y)
@@ -393,6 +409,10 @@ public class Image extends JFrame
         return false;
     }
 
+    /**
+     * Generates 4 point in a 3D space of a 2D vertex
+     * @return
+     */
     public List<double[]> getVertex(){
         return vertex;
     }
